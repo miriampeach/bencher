@@ -32,6 +32,7 @@ class TuringPattern(bch.ParametrizedSweep):
     video = bch.ResultVideo()
     score = bch.ResultVar()
     img = bch.ResultImage()
+    img_extracted = bch.ResultImage()
 
     def laplacian(self, Z, dx):
         Ztop = Z[0:-2, 1:-1]
@@ -84,6 +85,9 @@ class TuringPattern(bch.ParametrizedSweep):
 
         self.img = bch.add_image(rgb_alpha)
         self.video = vid_writer.write()
+        self.img_extracted = bch.video_writer.VideoWriter.extract_frame(
+            self.video, output_path=bch.gen_image_path()
+        )
         self.score = self.alpha + self.beta
         return super().__call__()
 

@@ -68,6 +68,32 @@ class VideoWriter:
         video_clip.close()
         return self.filename
 
+    @staticmethod
+    def extract_frame(video_path: str, time: float = None, output_path: str = None) -> str:
+        """Extract a frame from a video at a specific time.
+
+        Args:
+            video_path: Path to the video file
+            time: Time in seconds to extract frame. If None, uses last frame
+            output_path: Optional path where to save the image. If None, uses video name with _frame.png
+
+        Returns:
+            str: Path to the saved PNG image
+        """
+        if output_path is None:
+            output_path = (
+                Path(video_path).with_stem(f"{Path(video_path).stem}_frame").with_suffix(".png")
+            )
+        else:
+            output_path = Path(output_path)
+
+        with moviepy.video.io.VideoFileClip.VideoFileClip(video_path) as video:
+            frame_time = time if time is not None else video.duration
+            frame = video.get_frame(frame_time)
+            Image.fromarray(frame).save(output_path)
+
+        return str(output_path)
+
 
 def add_image(np_array: np.ndarray, name: str = "img") -> str:
     """Creates a file on disk from a numpy array and returns the created image path"""
