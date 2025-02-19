@@ -1106,7 +1106,7 @@ packages:
 - pypi: .
   name: holobench
   version: 1.40.1
-  sha256: 39c893812a508a0df7482e196ba2758ddf0e8c9916a9975dac0fd8b86c3d6322
+  sha256: 82b14eb35afdff6a6e3b9c7e167414331c45cb16074ba3c3ecedab2d9d5fdebc
   requires_dist:
   - holoviews>=1.15,<=1.20.0
   - numpy>=1.0,<=2.2.3
@@ -1136,7 +1136,6 @@ packages:
   - rerun-notebook ; extra == 'rerun'
   - flask ; extra == 'rerun'
   - flask-cors ; extra == 'rerun'
-  - scoop>=0.7.0,<=0.7.2.0 ; extra == 'scoop'
   requires_python: '>=3.10,<3.13'
   editable: true
 - pypi: https://files.pythonhosted.org/packages/56/89/8df4efa78df8b129847c8a7c0e492376cca62ab68453e5a20375a1c6291b/holoviews-1.20.0-py3-none-any.whl
