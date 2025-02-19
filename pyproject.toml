@@ -23,6 +23,7 @@ dependencies = [
     "strenum>=0.4.0,<=0.4.15",
     "scikit-learn>=1.2,<=1.6.1",
     "moviepy>=2.1.2,<=2.1.2",
+    "libsqlite==3.48.0",
 ]
 
 [project.urls]
