@@ -85,9 +85,8 @@ class TuringPattern(bch.ParametrizedSweep):
 
         self.img = bch.add_image(rgb_alpha)
         self.video = vid_writer.write()
-        self.img_extracted = bch.video_writer.VideoWriter.extract_frame(
-            self.video, output_path=bch.gen_image_path()
-        )
+        self.img_extracted = bch.video_writer.VideoWriter.extract_frame(self.video)
+        print("img path", self.img_extracted)
         self.score = self.alpha + self.beta
         return super().__call__()
 
@@ -127,7 +126,7 @@ if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
     # run_cfg_ex.cache_samples = True
-    run_cfg_ex.only_hash_tag = True
+    # run_cfg_ex.only_hash_tag = True
 
     # example_video(run_cfg_ex).report.show()
     example_video_tap(run_cfg_ex).report.show()

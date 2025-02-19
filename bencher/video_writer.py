@@ -92,7 +92,7 @@ class VideoWriter:
             frame = video.get_frame(frame_time)
             Image.fromarray(frame).save(output_path)
 
-        return str(output_path)
+        return output_path.as_posix()
 
 
 def add_image(np_array: np.ndarray, name: str = "img") -> str:
