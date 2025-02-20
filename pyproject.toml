@@ -23,7 +23,6 @@ dependencies = [
     "strenum>=0.4.0,<=0.4.15",
     "scikit-learn>=1.2,<=1.6.1",
     "moviepy>=2.1.2,<=2.1.2",
-    "libsqlite==3.48.0",
 ]
 
 [project.urls]
@@ -120,6 +119,9 @@ docs = "rm -rf docs/builtdocs; rm -rf docs/jupyter_execute; sphinx-build -b html
 #demos
 demo = "python3 bencher/example/example_image.py"
 demo_rerun = "python3 bencher/example/example_rerun.py"
+
+[tool.pixi.dependencies]
+sqlite = "==3.48.0"
 
 
 [tool.pylint]
