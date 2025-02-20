@@ -120,6 +120,9 @@ docs = "rm -rf docs/builtdocs; rm -rf docs/jupyter_execute; sphinx-build -b html
 demo = "python3 bencher/example/example_image.py"
 demo_rerun = "python3 bencher/example/example_rerun.py"
 
+[tool.pixi.dependencies]
+sqlite = "==3.48.0"
+
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
