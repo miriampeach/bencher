@@ -53,6 +53,7 @@ class BenchResult(PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult
         self,
         plot_list: List[callable] = None,
         remove_plots: List[callable] = None,
+        default_container=pn.Column,
         **kwargs,
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
@@ -67,7 +68,7 @@ class BenchResult(PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult
 
         kwargs = self.set_plot_size(**kwargs)
 
-        row = EmptyContainer(pn.Row())
+        row = EmptyContainer(default_container())
         for plot_callback in plot_list:
             if self.plt_cnt_cfg.print_debug:
                 print(f"checking: {plot_callback.__name__}")
