@@ -10,7 +10,6 @@ from enum import auto
 try:
     from scoop import futures as scoop_future_executor
 except ImportError as e:
-    logging.warning(e.msg)
     scoop_future_executor = None
 
 
