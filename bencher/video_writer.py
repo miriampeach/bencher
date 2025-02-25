@@ -88,7 +88,7 @@ class VideoWriter:
             output_path = Path(output_path)
 
         with moviepy.video.io.VideoFileClip.VideoFileClip(video_path) as video:
-            frame_time = time if time is not None else video.duration
+            frame_time = time if time is not None else video.duration - 2.0 / video.fps
             frame = video.get_frame(frame_time)
             Image.fromarray(frame).save(output_path)
 
