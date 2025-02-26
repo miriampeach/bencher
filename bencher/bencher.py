@@ -896,7 +896,5 @@ class Bench(BenchPlotServer):
         if self.worker_class_instance is not None:
             if as_str:
                 return [i.name for i in self.worker_class_instance.get_results_only()]
-            else:
-                return self.worker_class_instance.get_results_only()
-        else:
-            raise RuntimeError("Worker class instance not set")
+            return self.worker_class_instance.get_results_only()
+        raise RuntimeError("Worker class instance not set")
