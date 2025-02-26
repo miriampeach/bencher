@@ -301,7 +301,7 @@ class Bench(BenchPlotServer):
                     "No results variables passed, using all result variables in bench class:"
                 )
                 if self.result_vars is None:
-                    result_vars_in = self.get_result_vars()
+                    result_vars_in = self.get_result_vars(as_str=False)
                 else:
                     result_vars_in = deepcopy(self.result_vars)
 
