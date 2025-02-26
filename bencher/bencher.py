@@ -895,7 +895,7 @@ class Bench(BenchPlotServer):
         """
         if self.worker_class_instance is not None:
             if as_str:
-                return [str(i) for i in self.worker_class_instance.get_results_only()]
+                return [i.name for i in self.worker_class_instance.get_results_only()]
             else:
                 return self.worker_class_instance.get_results_only()
         else:
