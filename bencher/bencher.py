@@ -301,7 +301,7 @@ class Bench(BenchPlotServer):
                     "No results variables passed, using all result variables in bench class:"
                 )
                 if self.result_vars is None:
-                    result_vars_in = self.worker_class_instance.get_results_only()
+                    result_vars_in = self.get_result_vars(as_str=False)
                 else:
                     result_vars_in = deepcopy(self.result_vars)
 
@@ -877,3 +877,24 @@ class Bench(BenchPlotServer):
     def publish(self, remote_callback: Callable) -> str:
         branch_name = f"{self.bench_name}_{self.run_cfg.run_tag}"
         return self.report.publish(remote_callback, branch_name=branch_name)
+
+    def get_result_vars(self, as_str: bool = True) -> List[str | ParametrizedSweep]:
+        """
+        Retrieve the result variables from the worker class instance.
+
+        Args:
+            as_str (bool): If True, the result variables are returned as strings.
+                           If False, they are returned in their original form.
+                           Default is True.
+
+        Returns:
+            List[str | ParametrizedSweep]: A list of result variables, either as strings or in their original form.
+
+        Raises:
+            RuntimeError: If the worker class instance is not set.
+        """
+        if self.worker_class_instance is not None:
+            if as_str:
+                return [i.name for i in self.worker_class_instance.get_results_only()]
+            return self.worker_class_instance.get_results_only()
+        raise RuntimeError("Worker class instance not set")
