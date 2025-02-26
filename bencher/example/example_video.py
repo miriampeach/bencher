@@ -119,6 +119,8 @@ def example_video_tap(
         )
     )
 
+    bench.worker_class_instance.get_results_only()
+
     return bench
 
 
