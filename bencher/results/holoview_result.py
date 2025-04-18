@@ -88,7 +88,7 @@ class HoloviewResult(PanelResult):
         # return time_widget_args
 
     def to_bar(
-        self, result_var: Parameter = None, override: bool = False, **kwargs
+        self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.panel]:
         return self.filter(
             self.to_bar_ds,
@@ -146,6 +146,7 @@ class HoloviewResult(PanelResult):
         tap_var=None,
         tap_container: pn.pane.panel = None,
         target_dimension=2,
+        override: bool = True,
         **kwargs,
     ) -> Optional[pn.panel]:
         if tap_var is None:
@@ -170,6 +171,7 @@ class HoloviewResult(PanelResult):
             target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
@@ -183,7 +185,7 @@ class HoloviewResult(PanelResult):
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
-    def to_curve(self, result_var: Parameter = None, **kwargs):
+    def to_curve(self, result_var: Parameter = None, override: bool = True, **kwargs):
         return self.filter(
             self.to_curve_ds,
             float_range=VarRange(1, 1),
@@ -194,6 +196,7 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
@@ -232,6 +235,7 @@ class HoloviewResult(PanelResult):
         tap_container: pn.pane.panel = None,
         tap_container_direction: pn.Column | pn.Row = None,
         target_dimension=2,
+        override: bool = True,
         **kwargs,
     ) -> Optional[pn.panel]:
         if tap_var is None:
@@ -258,6 +262,7 @@ class HoloviewResult(PanelResult):
             target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
@@ -682,7 +687,9 @@ class HoloviewResult(PanelResult):
         """
         return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
 
-    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
+    def to_surface(
+        self, result_var: Parameter = None, override: bool = True, **kwargs
+    ) -> Optional[pn.pane.Pane]:
         return self.filter(
             self.to_surface_ds,
             float_range=VarRange(2, None),
@@ -692,6 +699,7 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
