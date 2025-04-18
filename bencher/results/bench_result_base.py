@@ -102,7 +102,9 @@ class BenchResultBase(OptunaResult):
             elif isinstance(result_var, str):
                 var_name = result_var
             else:
-                raise TypeError(f"Unsupported type for result_var: {type(result_var)}. Expected Parameter or str.")
+                raise TypeError(
+                    f"Unsupported type for result_var: {type(result_var)}. Expected Parameter or str."
+                )
             ds_out = ds_out[var_name].to_dataset(name=var_name)
 
         def rename_ds(dataset: xr.Dataset, suffix: str):
