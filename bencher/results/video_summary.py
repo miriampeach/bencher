@@ -60,7 +60,7 @@ class VideoSummaryResult(BenchResultBase):
             input_range=VarRange(1, None),
         )
         matches_res = plot_filter.matches_result(
-            self.plt_cnt_cfg, callable_name(self.to_video_grid_ds)
+            self.plt_cnt_cfg, callable_name(self.to_video_grid_ds), override=False
         )
 
         if pane_collection is None:

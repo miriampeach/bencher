@@ -7,12 +7,22 @@ from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
+from bencher.results.holoview_results.box_whisker import BoxWhiskerResult
+from bencher.results.holoview_results.scatter import ScatterResult
 from bencher.results.hvplot_result import HvplotResult
 from bencher.results.dataset_result import DataSetResult
 from bencher.utils import listify
 
 
-class BenchResult(PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult, DataSetResult):  # noqa pylint: disable=too-many-ancestors
+class BenchResult(
+    PlotlyResult,
+    BoxWhiskerResult,
+    ScatterResult,
+    HoloviewResult,
+    HvplotResult,
+    VideoSummaryResult,
+    DataSetResult,
+):  # noqa pylint: disable=too-many-ancestors
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
     def __init__(self, bench_cfg) -> None:
@@ -25,7 +35,8 @@ class BenchResult(PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult
         return [
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
             HoloviewResult.to_bar,
-            HoloviewResult.to_scatter_jitter,
+            # BoxWhiskerResult.to_boxplot,
+            ScatterResult.to_scatter_jitter,  # needs to be fixed
             HoloviewResult.to_curve,
             HoloviewResult.to_line,
             HoloviewResult.to_heatmap,
