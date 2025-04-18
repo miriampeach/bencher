@@ -46,7 +46,7 @@ class VarRange:
 
     def matches_info(self, val, name):
         match = self.matches(val)
-        info = f"{name}\t{match}\t{self.lower_bound}>= {val} <={self.upper_bound}"
+        info = f"{name}\t{self.lower_bound}>= {val} <={self.upper_bound} is {match}"
         return match, info
 
     def __str__(self) -> str:
@@ -112,9 +112,7 @@ class PlotMatchesResult:
         self.plt_cnt_cfg = plt_cnt_cfg
 
         # if self.plt_cnt_cfg.print_debug:
-        logging.info(f"checking {plot_name} result: {self.overall}")
-        if not self.overall:
-            logging.info(self.matches_info)
+        logging.info(self.matches_info)
 
     def to_panel(self, **kwargs) -> Optional[pn.pane.Markdown]:
         if self.plt_cnt_cfg.print_debug:
