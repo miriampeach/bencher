@@ -66,7 +66,7 @@ class HoloviewResult(PanelResult):
         return None
 
     def layout_plots(self, plot_callback: callable):
-        if len(self.bench_cfg.result_vars) > 1:
+        if len(self.bench_cfg.result_vars) > 0:
             pt = hv.Layout()
             got_results = False
             for rv in self.bench_cfg.result_vars:
@@ -214,8 +214,6 @@ class HoloviewResult(PanelResult):
         # find pairs of {var_name} {var_name}_std to plot the line and their spreads.
         var = result_var.name
         std_var = f"{var}_std"
-
-        print("rvname", result_var.name)
         pt *= hvds.to(hv.Curve, vdims=var, label=var).opts(title=title, **kwargs)
         # Only create a Spread if the matching _std variable exists
         if std_var in dataset.data_vars:
@@ -588,10 +586,8 @@ class HoloviewResult(PanelResult):
             repeats_range=VarRange(2, None),
             input_range=VarRange(1, None),
         ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
-        print("rvname", result_var.name, matches.overall)
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
-            # Create a scatter plot that includes the specified result variable
             pt = (
                 ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
                 .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
