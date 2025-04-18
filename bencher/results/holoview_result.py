@@ -65,7 +65,7 @@ class HoloviewResult(PanelResult):
         return None
 
     def layout_plots(self, plot_callback: callable):
-        if len(self.bench_cfg.result_vars) > 0:
+        if len(self.bench_cfg.result_vars) > 1:
             pt = hv.Layout()
             got_results = False
             for rv in self.bench_cfg.result_vars:
@@ -591,7 +591,7 @@ class HoloviewResult(PanelResult):
             # Create a scatter plot that includes the specified result variable
             pt = (
                 ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
-                .opts(jitter=0.1, show_legend=True, title=self.to_plot_title(), **kwargs)
+                .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
                 .overlay("repeat")
             )
             return pt
