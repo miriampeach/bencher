@@ -209,6 +209,7 @@ class HoloviewResult(PanelResult):
         var = result_var.name
         std_var = f"{var}_std"
 
+        print("rvname", result_var.name)
         pt *= hvds.to(hv.Curve, vdims=var, label=var).opts(title=title, **kwargs)
         # Only create a Spread if the matching _std variable exists
         if std_var in dataset.data_vars:
@@ -458,12 +459,12 @@ class HoloviewResult(PanelResult):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self, **kwargs) -> Optional[pn.panel]:
+    def to_scatter(self, override: bool = True, **kwargs) -> Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
-        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter")
+        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter", override=override)
         if match_res.overall:
             hv_ds = self.to_hv_dataset(ReduceType.SQUEEZE)
             by = None
@@ -580,6 +581,7 @@ class HoloviewResult(PanelResult):
             repeats_range=VarRange(2, None),
             input_range=VarRange(1, None),
         ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
+        print("rvname", result_var.name,matches.overall)
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
             pt = (
