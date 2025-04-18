@@ -36,7 +36,7 @@ class BenchResult(
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
             HoloviewResult.to_bar,
             # BoxWhiskerResult.to_boxplot,
-            ScatterResult.to_scatter_jitter, #needs to be fixed
+            ScatterResult.to_scatter_jitter,  # needs to be fixed
             HoloviewResult.to_curve,
             HoloviewResult.to_line,
             HoloviewResult.to_heatmap,
