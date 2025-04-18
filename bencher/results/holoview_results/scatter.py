@@ -11,7 +11,7 @@ from bencher.results.bench_result_base import ReduceType
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 
 
-from bencher.results.holoview_result import HoloviewResult
+from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class ScatterResult(HoloviewResult):

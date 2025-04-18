@@ -13,7 +13,7 @@ from bencher.plotting.plot_filter import VarRange
 from bencher.variables.results import ResultVar
 
 
-from bencher.results.holoview_result import HoloviewResult
+from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class BoxWhiskerResult(HoloviewResult):
