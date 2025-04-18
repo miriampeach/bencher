@@ -62,7 +62,6 @@ class BenchResultBase(OptunaResult):
         reduce: ReduceType = ReduceType.AUTO,
         result_var: ResultVar = None,
         level: int = None,
-        **kwargs,
     ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
