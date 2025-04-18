@@ -43,6 +43,24 @@ class ScatterResult(HoloviewResult):
             return pt
         return matches.to_panel()
 
+    def to_scatter(self, override: bool = True, **kwargs) -> Optional[pn.panel]:
+        match_res = PlotFilter(
+            float_range=VarRange(0, 0),
+            cat_range=VarRange(0, None),
+            repeats_range=VarRange(1, 1),
+        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter", override=override)
+        if match_res.overall:
+            hv_ds = self.to_hv_dataset(ReduceType.SQUEEZE)
+            by = None
+            subplots = False
+            if self.plt_cnt_cfg.cat_cnt > 1:
+                by = [v.name for v in self.bench_cfg.input_vars[1:]]
+                subplots = False
+            return hv_ds.data.hvplot.scatter(by=by, subplots=subplots, **kwargs).opts(
+                title=self.to_plot_title()
+            )
+        return match_res.to_panel(**kwargs)
+
     # def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
     #     matches = PlotFilter(
     #         float_range=VarRange(0, 0),

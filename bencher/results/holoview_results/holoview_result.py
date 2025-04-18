@@ -115,48 +115,6 @@ class HoloviewResult(PanelResult):
             **kwargs,
         )
 
-    def to_curve(self, result_var: Parameter = None, override: bool = True, **kwargs):
-        return self.filter(
-            self.to_curve_ds,
-            float_range=VarRange(1, 1),
-            cat_range=VarRange(0, None),
-            repeats_range=VarRange(2, None),
-            reduce=ReduceType.REDUCE,
-            # reduce=ReduceType.MINMAX,
-            target_dimension=2,
-            result_var=result_var,
-            result_types=(ResultVar),
-            override=override,
-            **kwargs,
-        )
-
-    def to_curve_ds(
-        self, dataset: xr.Dataset, result_var: Parameter, **kwargs
-    ) -> Optional[hv.Curve]:
-        hvds = hv.Dataset(dataset)
-        title = self.title_from_ds(dataset, result_var, **kwargs)
-        # print(result_var.name)
-        # print( dataset)
-        pt = hv.Overlay()
-        # find pairs of {var_name} {var_name}_std to plot the line and their spreads.
-        var = result_var.name
-        std_var = f"{var}_std"
-        pt *= hvds.to(hv.Curve, vdims=var, label=var).opts(title=title, **kwargs)
-        # Only create a Spread if the matching _std variable exists
-        if std_var in dataset.data_vars:
-            pt *= hvds.to(hv.Spread, vdims=[var, std_var])
-
-        # for var in dataset.data_vars:
-        #     print(var)
-        #     if not var.endswith("_std"):
-        #         std_var = f"{var}_std"
-        #         pt *= hvds.to(hv.Curve, vdims=var, label=var).opts(title=title, **kwargs)
-        #         #Only create a Spread if the matching _std variable exists
-        #         if std_var in dataset.data_vars:
-        #             pt *= hvds.to(hv.Spread, vdims=[var, std_var])
-
-        return pt.opts(legend_position="right")
-
     def result_var_to_container(self, result_var):
         if isinstance(result_var, ResultImage):
             return pn.pane.PNG
@@ -183,24 +141,6 @@ class HoloviewResult(PanelResult):
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
-
-    def to_scatter(self, override: bool = True, **kwargs) -> Optional[pn.panel]:
-        match_res = PlotFilter(
-            float_range=VarRange(0, 0),
-            cat_range=VarRange(0, None),
-            repeats_range=VarRange(1, 1),
-        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter", override=override)
-        if match_res.overall:
-            hv_ds = self.to_hv_dataset(ReduceType.SQUEEZE)
-            by = None
-            subplots = False
-            if self.plt_cnt_cfg.cat_cnt > 1:
-                by = [v.name for v in self.bench_cfg.input_vars[1:]]
-                subplots = False
-            return hv_ds.data.hvplot.scatter(by=by, subplots=subplots, **kwargs).opts(
-                title=self.to_plot_title()
-            )
-        return match_res.to_panel(**kwargs)
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
         return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.bench_cfg.hmap_kdims).opts(
@@ -253,100 +193,6 @@ class HoloviewResult(PanelResult):
         see https://panel.holoviz.org/reference/widgets/Tabulator.html for extra options
         """
         return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
-
-    def to_surface(
-        self, result_var: Parameter = None, override: bool = True, **kwargs
-    ) -> Optional[pn.pane.Pane]:
-        return self.filter(
-            self.to_surface_ds,
-            float_range=VarRange(2, None),
-            cat_range=VarRange(0, None),
-            input_range=VarRange(1, None),
-            reduce=ReduceType.REDUCE,
-            target_dimension=2,
-            result_var=result_var,
-            result_types=(ResultVar),
-            override=override,
-            **kwargs,
-        )
-
-    def to_surface_ds(
-        self,
-        dataset: xr.Dataset,
-        result_var: Parameter,
-        override: bool = True,
-        alpha: float = 0.3,
-        **kwargs,
-    ) -> Optional[pn.panel]:
-        """Given a benchCfg generate a 2D surface plot
-
-        Args:
-            result_var (Parameter): result variable to plot
-
-        Returns:
-            pn.pane.holoview: A 2d surface plot as a holoview in a pane
-        """
-        matches_res = PlotFilter(
-            float_range=VarRange(2, 2),
-            cat_range=VarRange(0, None),
-            vector_len=VarRange(1, 1),
-            result_vars=VarRange(1, 1),
-        ).matches_result(self.plt_cnt_cfg, "to_surface_hv", override)
-        if matches_res.overall:
-            # xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var)
-
-            # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
-            # hv.config.image_rtol = 1.0
-
-            mean = dataset[result_var.name]
-
-            hvds = hv.Dataset(dataset[result_var.name])
-
-            x = self.plt_cnt_cfg.float_vars[0]
-            y = self.plt_cnt_cfg.float_vars[1]
-
-            try:
-                surface = hvds.to(hv.Surface, vdims=[result_var.name])
-                surface = surface.opts(colorbar=True)
-            except Exception as e:  # pylint: disable=broad-except
-                logging.warning(e)
-
-            if self.bench_cfg.repeats > 1:
-                std_dev = dataset[f"{result_var.name}_std"]
-
-                upper = mean + std_dev
-                upper.name = result_var.name
-
-                lower = mean - std_dev
-                lower.name = result_var.name
-
-                surface *= (
-                    hv.Dataset(upper)
-                    .to(hv.Surface)
-                    .opts(alpha=alpha, colorbar=False, backend="plotly")
-                )
-                surface *= (
-                    hv.Dataset(lower)
-                    .to(hv.Surface)
-                    .opts(alpha=alpha, colorbar=False, backend="plotly")
-                )
-
-            surface = surface.opts(
-                zlabel=f"{result_var.name} [{result_var.units}]",
-                title=f"{result_var.name} vs ({x.name} and {y.name})",
-                backend="plotly",
-                **kwargs,
-            )
-
-            if self.bench_cfg.render_plotly:
-                hv.extension("plotly")
-                out = surface
-            else:
-                # using render disabled the holoviews sliders :(
-                out = hv.render(surface, backend="plotly")
-            return pn.Column(out, name="surface_hv")
-
-        return matches_res.to_panel()
 
     # def plot_scatter2D_hv(self, rv: ParametrizedSweep) -> pn.pane.Plotly:
     # import plotly.express as px
