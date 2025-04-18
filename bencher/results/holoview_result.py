@@ -568,34 +568,6 @@ class HoloviewResult(PanelResult):
     #         return pt
     #     return matches.to_panel()
 
-    def to_scatter_jitter(
-        self,
-        override: bool = False,
-        **kwargs,  # pylint: disable=unused-argument
-    ) -> List[hv.Scatter]:
-        return self.overlay_plots(
-            partial(self.to_scatter_jitter_single, override=override, **kwargs)
-        )
-
-    def to_scatter_jitter_single(
-        self, result_var: Parameter, override: bool = True, **kwargs
-    ) -> Optional[hv.Scatter]:
-        matches = PlotFilter(
-            float_range=VarRange(0, 0),
-            cat_range=VarRange(0, None),
-            repeats_range=VarRange(2, None),
-            input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
-        if matches.overall:
-            ds = self.to_hv_dataset(ReduceType.NONE)
-            pt = (
-                ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
-                .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
-                .overlay("repeat")
-            )
-            return pt
-        return matches.to_panel()
-
     def to_heatmap_single(
         self,
         result_var: Parameter,
