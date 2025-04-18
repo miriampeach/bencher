@@ -591,13 +591,17 @@ class HoloviewResult(PanelResult):
         return matches.to_panel()
 
     def to_heatmap_single(
-        self, result_var: Parameter, reduce: ReduceType = ReduceType.AUTO, **kwargs
+        self,
+        result_var: Parameter,
+        override: bool = True,
+        reduce: ReduceType = ReduceType.AUTO,
+        **kwargs,
     ) -> hv.HeatMap:
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_heatmap")
+        ).matches_result(self.plt_cnt_cfg, "to_heatmap", override)
         if matches_res.overall:
             z = result_var
             title = f"{z.name} vs ("
@@ -684,7 +688,9 @@ class HoloviewResult(PanelResult):
         """
         return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
 
-    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
+    def to_surface(
+        self, result_var: Parameter = None, override: bool = True, **kwargs
+    ) -> Optional[pn.pane.Pane]:
         return self.filter(
             self.to_surface_ds,
             float_range=VarRange(2, None),
@@ -694,11 +700,17 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
     def to_surface_ds(
-        self, dataset: xr.Dataset, result_var: Parameter, alpha: float = 0.3, **kwargs
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        override: bool = True,
+        alpha: float = 0.3,
+        **kwargs,
     ) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D surface plot
 
@@ -713,7 +725,7 @@ class HoloviewResult(PanelResult):
             cat_range=VarRange(0, None),
             vector_len=VarRange(1, 1),
             result_vars=VarRange(1, 1),
-        ).matches_result(self.plt_cnt_cfg, "to_surface_hv")
+        ).matches_result(self.plt_cnt_cfg, "to_surface_hv", override)
         if matches_res.overall:
             # xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var)
 
