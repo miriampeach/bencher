@@ -451,8 +451,10 @@ class HoloviewResult(PanelResult):
         bound_plot = pn.Column(title, *cont_instances)
         return pn.Row(htmap, bound_plot)
 
-    def to_error_bar(self) -> hv.Bars:
-        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
+    def to_error_bar(self, result_var: Parameter | str = None, **kwargs) -> hv.Bars:
+        return self.to_hv_dataset(ReduceType.REDUCE, result_var=result_var, **kwargs).to(
+            hv.ErrorBars
+        )
 
     def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
         ds = self.to_hv_dataset(reduce)
