@@ -36,6 +36,7 @@ class HoloviewResult(PanelResult):
             hv.opts.Points(**width_heigh),
             hv.opts.Bars(**width_heigh),
             hv.opts.Scatter(**width_heigh),
+            hv.opts.BoxWhisker(**width_heigh),
             hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
             # hv.opts.Surface(**width_heigh),
             hv.opts.GridSpace(plot_size=400),
@@ -109,6 +110,8 @@ class HoloviewResult(PanelResult):
         if self.plt_cnt_cfg.cat_cnt >= 2:
             by = self.plt_cnt_cfg.cat_vars[1].name
         da_plot = dataset[result_var.name]
+
+        print("by", by)
         title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
