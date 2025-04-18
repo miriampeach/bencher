@@ -14,7 +14,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
     # Variables for controlling the sweep
     float_vars_count = bch.IntSweep(
-        default=0, bounds=(0, 2), doc="The number of floating point variables that are swept"
+        default=0, bounds=(0, 3), doc="The number of floating point variables that are swept"
     )
     categorical_vars_count = bch.IntSweep(
         default=0, bounds=(0, 2), doc="The number of categorical variables that are swept"
