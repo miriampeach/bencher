@@ -66,7 +66,7 @@ class PlotFilter:
     input_range: VarRange = VarRange(1, None)
 
     def matches_result(
-        self, plt_cnt_cfg: PltCntCfg, plot_name: str, override: bool 
+        self, plt_cnt_cfg: PltCntCfg, plot_name: str, override: bool
     ) -> PlotMatchesResult:
         """Checks if the result data signature matches the type of data the plot is able to display."""
         return PlotMatchesResult(self, plt_cnt_cfg, plot_name, override)
@@ -81,7 +81,7 @@ class PlotMatchesResult:
         plot_filter: PlotFilter,
         plt_cnt_cfg: PltCntCfg,
         plot_name: str,
-        override: bool = False,
+        override: bool,
     ):
         match_info = []
         matches = []
