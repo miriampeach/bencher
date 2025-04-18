@@ -51,7 +51,6 @@ class BenchMetaGen(bch.ParametrizedSweep):
         self.benchable_obj = benchable_obj if benchable_obj is not None else BenchableObject()
 
         # Dynamically discover parameters from the benchable object
-        all_params = {}
         float_param_names = []
         categorical_param_names = []
         result_param_names = []
