@@ -2,7 +2,10 @@
 	"name": "bencher",
 	"build": {
 		"dockerfile": "Dockerfile",
-		"context": ".."
+		"context": "..",
+		"args": {
+			"PIXI_VERSION": "v0.41.4"
+		}
 	},
 	"customizations": {
 		"vscode": {
