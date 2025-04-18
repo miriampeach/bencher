@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Optional, List
+import panel as pn
 import holoviews as hv
 from param import Parameter
 from functools import partial
