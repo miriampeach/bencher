@@ -80,7 +80,7 @@ class BenchResultBase(OptunaResult):
     def to_dataset(
         self,
         reduce: ReduceType = ReduceType.AUTO,
-        result_var: ResultVar = None,
+        result_var: ResultVar | str = None,
         level: int = None,
     ) -> xr.Dataset:
         """Generate a summarised xarray dataset.
@@ -97,7 +97,11 @@ class BenchResultBase(OptunaResult):
         ds_out = self.ds.copy()
 
         if result_var is not None:
-            ds_out = ds_out[result_var.name].to_dataset(name=result_var.name)
+            if isinstance(result_var, Parameter):
+                var_name = result_var.name
+            else:
+                var_name = result_var
+            ds_out = ds_out[var_name].to_dataset(name=var_name)
 
         def rename_ds(dataset: xr.Dataset, suffix: str):
             # var_name =
