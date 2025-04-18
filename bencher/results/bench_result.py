@@ -27,6 +27,7 @@ class BenchResult(
     BarResult,
     HeatmapResult,
     CurveResult,
+    SurfaceResult,
     HoloviewResult,
     HvplotResult,
     VideoSummaryResult,
@@ -38,6 +39,10 @@ class BenchResult(
         PlotlyResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
         # DataSetResult.__init__(self.bench_cfg)
+
+    # Explicitly include to_surface method for direct access
+    def to_surface(self, *args, **kwargs):
+        return SurfaceResult.to_surface(self, *args, **kwargs)
 
     @staticmethod
     def default_plot_callbacks():
