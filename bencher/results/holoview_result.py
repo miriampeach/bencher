@@ -564,7 +564,6 @@ class HoloviewResult(PanelResult):
 
     def to_scatter_jitter(
         self,
-        result_var: Parameter = None,
         override: bool = False,
         **kwargs,  # pylint: disable=unused-argument
     ) -> List[hv.Scatter]:
@@ -581,12 +580,13 @@ class HoloviewResult(PanelResult):
             repeats_range=VarRange(2, None),
             input_range=VarRange(1, None),
         ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
-        print("rvname", result_var.name,matches.overall)
+        print("rvname", result_var.name, matches.overall)
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
+            # Create a scatter plot that includes the specified result variable
             pt = (
                 ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
-                .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
+                .opts(jitter=0.1, show_legend=True, title=self.to_plot_title(), **kwargs)
                 .overlay("repeat")
             )
             return pt
