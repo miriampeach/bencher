@@ -54,7 +54,7 @@ class BenchResult(PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult
         plot_list: List[callable] = None,
         remove_plots: List[callable] = None,
         default_container=pn.Column,
-        override: bool = False,
+        override: bool = False,  # false so that plots that are not supported are not shown
         **kwargs,
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
@@ -74,7 +74,7 @@ class BenchResult(PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult
             if self.plt_cnt_cfg.print_debug:
                 print(f"checking: {plot_callback.__name__}")
             # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
-            row.append(plot_callback(self,override=override, **kwargs))
+            row.append(plot_callback(self, override=override, **kwargs))
 
         self.plt_cnt_cfg.print_debug = True
         if len(row.pane) == 0:
