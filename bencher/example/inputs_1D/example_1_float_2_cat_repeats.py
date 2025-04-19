@@ -1,6 +1,9 @@
+"""This file demonstrates benchmarking with both float and categorical variables with repeats."""
+
 import bencher as bch
 from bencher.example.meta.example_meta import BenchableObject
 
+# Configure and run a benchmark with multiple input types and repeats
 run_cfg = bch.BenchRunCfg()
 run_cfg.repeats = 20
 run_cfg.level = 4

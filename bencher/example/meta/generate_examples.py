@@ -2,13 +2,15 @@ import nbformat as nbf
 from pathlib import Path
 
 
-def convert_example_to_jupyter_notebook(filename: str, output_path: str):
-    # print
+def convert_example_to_jupyter_notebook(
+    filename: str, output_path: str, repeats: int = None
+) -> None:
     source_path = Path(filename)
 
     nb = nbf.v4.new_notebook()
     title = source_path.stem
-    function_name = f"{source_path.stem}()"
+    repeat_exr = f"bch.BenchRunCfg(repeats={repeats})" if repeats else ""
+    function_name = f"{source_path.stem}({repeat_exr})"
     text = f"""# {title}"""
 
     code = "%%capture\n"
@@ -39,14 +41,26 @@ bench.get_result().to_auto_plots()
 
 if __name__ == "__main__":
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_1_out.py", "1D"
-    )
-    convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out.py", "1D"
+        "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D", repeats=100
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out_repeats.py", "1D"
+        "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_2_out.py", "0D", repeats=100
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_int_in_1_out.py", "1D"
+    )
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_int_in_2_out.py", "1D"
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_int_in_2_out_repeats.py", "1D"
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_cat_in_2_out_repeats.py", "1D"
     )
 
     # todo, enable

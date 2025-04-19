@@ -32,25 +32,24 @@ class DataSource:
         if repeat is None:
             self.call_count[index] += 1
             repeat = self.call_count[index]
+        print(index, repeat)
         return self.data[index][repeat - 1]
 
 
 class Example1D(bch.ParametrizedSweep):
-    """Example 1D parameter sweep class with one input and two output dimensions."""
+    """Example 1D parameter sweep class with one input dimension and one output dimension."""
 
     index = bch.IntSweep(default=0, bounds=[0, 5], doc="Input index", units="rad", samples=30)
-    output = bch.ResultVar(units="v", doc="Output value from data source 1")
-    output2 = bch.ResultVar(units="v", doc="Negated output value from data source 2")
+    output = bch.ResultVar(units="v", doc="Output value from data source")
 
     def __init__(self, **params):
-        """Initialize the Example1D sweep with two data sources.
+        """Initialize the Example1D sweep with a data source.
 
         Args:
             **params: Parameters to pass to the parent class constructor
         """
         super().__init__(**params)
         self.data1 = DataSource()
-        self.data2 = DataSource()
 
     def __call__(self, **kwargs) -> dict:
         """Execute the parameter sweep for the given parameters.
@@ -59,19 +58,18 @@ class Example1D(bch.ParametrizedSweep):
             **kwargs: Additional parameters to update before executing
 
         Returns:
-            dict: Dictionary containing the outputs of the parameter sweep
+            dict: Dictionary containing the output of the parameter sweep
         """
         self.update_params_from_kwargs(**kwargs)
         self.output = self.data1.call(self.index)
-        self.output2 = -self.data2.call(self.index)
         return super().__call__(**kwargs)
 
 
-def example_1_in_2_out(
+def example_1_int_in_1_out(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example shows how to sample a 1-dimensional integer variable and plot
-    the result of two output variables from that parameter sweep.
+    the result of that parameter sweep.
 
     Args:
         run_cfg: Configuration for the benchmark run
@@ -82,24 +80,19 @@ def example_1_in_2_out(
     """
     bench = Example1D().to_bench(run_cfg, report)
     bench.plot_sweep()
-
-    # bench.report.append(bench.get_result().to_heatmap())
     return bench
 
 
 if __name__ == "__main__":
     run_config = bch.BenchRunCfg()
     report_obj = bch.BenchReport()
-    example_1_in_2_out(run_config, report_obj)
+    example_1_int_in_1_out(run_config, report_obj)
 
     run_config.repeats = 4
-    example_1_in_2_out(run_config, report_obj)
+    example_1_int_in_1_out(run_config, report_obj)
 
-    # run_config.over_time = True
-    # run_config.auto_plot = False
+    # run_cfg.over_time = True
     # for i in range(4):
-    #     example_1_in_2_out(run_config, report_obj)
+    #     example_1_in_2_out(run_cfg, report_obj)
 
-    # run_config.auto_plot = True
-    # example_1_in_2_out(run_config, report_obj)
     report_obj.show()

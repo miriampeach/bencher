@@ -1,4 +1,4 @@
-"""This file has some examples for how to perform basic benchmarking parameter sweeps"""
+"""This file has examples for how to perform basic benchmarking parameter sweeps"""
 
 import bencher as bch
 
@@ -36,7 +36,7 @@ class DataSource:
 
 
 class Example1D(bch.ParametrizedSweep):
-    """Example 1D parameter sweep class with one input and two output dimensions."""
+    """Example 1D parameter sweep class with one input dimension and two output dimensions."""
 
     index = bch.IntSweep(default=0, bounds=[0, 5], doc="Input index", units="rad", samples=30)
     output = bch.ResultVar(units="v", doc="Output value from data source 1")
@@ -67,7 +67,7 @@ class Example1D(bch.ParametrizedSweep):
         return super().__call__(**kwargs)
 
 
-def example_1_in_2_out(
+def example_1_int_in_2_out(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example shows how to sample a 1-dimensional integer variable and plot
@@ -90,11 +90,7 @@ def example_1_in_2_out(
 if __name__ == "__main__":
     run_config = bch.BenchRunCfg()
     report_obj = bch.BenchReport()
-    example_1_in_2_out(run_config, report_obj)
-
-    run_config.repeats = 4
-    example_1_in_2_out(run_config, report_obj)
-
+    example_1_int_in_2_out(run_config, report_obj)
     # run_config.over_time = True
     # run_config.auto_plot = False
     # for i in range(4):
