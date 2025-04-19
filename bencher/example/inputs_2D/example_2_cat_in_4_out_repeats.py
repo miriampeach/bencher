@@ -73,7 +73,7 @@ class ProgrammingBenchmark(bch.ParametrizedSweep):
         return super().__call__(**kwargs)
 
 
-def example_1_cat_in_2_out_repeats(
+def example_2_cat_in_4_out_repeats(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example compares performance metrics across programming languages and environments.
@@ -101,4 +101,4 @@ def example_1_cat_in_2_out_repeats(
 
 
 if __name__ == "__main__":
-    example_1_cat_in_2_out_repeats().report.show()
+    example_2_cat_in_4_out_repeats().report.show()
