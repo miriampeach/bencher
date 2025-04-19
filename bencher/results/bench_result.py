@@ -40,10 +40,6 @@ class BenchResult(
         HoloviewResult.__init__(self, bench_cfg)
         # DataSetResult.__init__(self.bench_cfg)
 
-    # Explicitly include to_surface method for direct access
-    def to_surface(self, *args, **kwargs):
-        return SurfaceResult.to_surface(self, *args, **kwargs)
-
     @staticmethod
     def default_plot_callbacks():
         return [
