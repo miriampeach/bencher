@@ -35,6 +35,26 @@ class LineResult(HoloviewResult):
         use_tap: bool = None,
         **kwargs,
     ) -> Optional[pn.panel]:
+        """Generates a line plot from benchmark data.
+
+        This method applies filters to ensure the data is appropriate for a line plot
+        and then passes the filtered data to the appropriate rendering method. If tap
+        functionality is enabled, it will create an interactive line plot that displays
+        additional information when data points are selected.
+
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            tap_var: Variables to display when tapping on line plot points.
+            tap_container (pn.pane.panel, optional): Container to hold tapped information.
+            target_dimension (int, optional): Target dimensionality for the plot. Defaults to 2.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            use_tap (bool, optional): Whether to enable tap functionality.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+
+        Returns:
+            Optional[pn.panel]: A panel containing the line plot if data is appropriate,
+                              otherwise returns filter match results.
+        """
         if tap_var is None:
             tap_var = self.plt_cnt_cfg.panel_vars
         elif not isinstance(tap_var, list):
@@ -62,6 +82,19 @@ class LineResult(HoloviewResult):
         )
 
     def to_line_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
+        """Creates a basic line plot from the provided dataset.
+
+        Given a filtered dataset, this method generates a line plot visualization showing
+        the relationship between a continuous input variable and the result variable.
+
+        Args:
+            dataset (xr.Dataset): The dataset containing benchmark results.
+            result_var (Parameter): The result variable to plot.
+            **kwargs: Additional keyword arguments passed to the line plot options.
+
+        Returns:
+            hvplot.element.Curve: A line plot visualization of the benchmark data.
+        """
         x = self.plt_cnt_cfg.float_vars[0].name
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 1:
@@ -79,6 +112,21 @@ class LineResult(HoloviewResult):
         container: pn.pane.panel = pn.pane.panel,
         **kwargs,
     ) -> pn.Row:
+        """Creates an interactive line plot with tap functionality.
+
+        This method generates a line plot with interactive hover and tap functionality that
+        displays additional information about selected points in separate containers.
+
+        Args:
+            dataset (xr.Dataset): The dataset containing benchmark results.
+            result_var (Parameter): The primary result variable to plot in the line plot.
+            result_var_plots (List[Parameter], optional): Additional result variables to display when a point is tapped.
+            container (pn.pane.panel, optional): Container to display tapped information.
+            **kwargs: Additional keyword arguments passed to the line plot options.
+
+        Returns:
+            pn.Row: A panel row containing the interactive line plot and containers for tapped information.
+        """
         htmap = self.to_line_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
         result_var_plots, cont_instances = self.setup_results_and_containers(
             result_var_plots, container

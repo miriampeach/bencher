@@ -25,6 +25,20 @@ class SurfaceResult(HoloviewResult):
     def to_surface(
         self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.pane.Pane]:
+        """Generates a 3D surface plot from benchmark data.
+
+        This method applies filters to ensure the data is appropriate for a surface plot
+        and then passes the filtered data to to_surface_ds for rendering.
+
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+
+        Returns:
+            Optional[pn.pane.Pane]: A panel containing the surface plot if data is appropriate,
+                                   otherwise returns filter match results.
+        """
         return self.filter(
             self.to_surface_ds,
             float_range=VarRange(2, None),
@@ -46,13 +60,22 @@ class SurfaceResult(HoloviewResult):
         alpha: float = 0.3,
         **kwargs,
     ) -> Optional[pn.panel]:
-        """Given a benchCfg generate a 2D surface plot
+        """Creates a 3D surface plot from the provided dataset.
+
+        Given a filtered dataset, this method generates a 3D surface visualization showing
+        the relationship between two input variables and the result variable. When multiple
+        benchmark repetitions are available, standard deviation bounds can also be displayed.
 
         Args:
-            result_var (Parameter): result variable to plot
+            dataset (xr.Dataset): The dataset containing benchmark results.
+            result_var (Parameter): The result variable to plot.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            alpha (float, optional): The transparency level for standard deviation surfaces. Defaults to 0.3.
+            **kwargs: Additional keyword arguments passed to the surface plot options.
 
         Returns:
-            pn.pane.holoview: A 2d surface plot as a holoview in a pane
+            Optional[pn.panel]: A panel containing the surface plot if data matches criteria,
+                               otherwise returns filter match results.
         """
         matches_res = PlotFilter(
             float_range=VarRange(2, 2),

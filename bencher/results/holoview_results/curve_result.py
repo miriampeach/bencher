@@ -21,6 +21,20 @@ class CurveResult(HoloviewResult):
     """
 
     def to_curve(self, result_var: Parameter = None, override: bool = True, **kwargs):
+        """Generates a curve plot from benchmark data.
+
+        This method applies filters to ensure the data is appropriate for a curve plot
+        and then passes the filtered data to to_curve_ds for rendering.
+
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+
+        Returns:
+            Optional[hv.Curve]: A curve plot if data is appropriate,
+                              otherwise returns filter match results.
+        """
         return self.filter(
             self.to_curve_ds,
             float_range=VarRange(1, 1),
@@ -38,6 +52,21 @@ class CurveResult(HoloviewResult):
     def to_curve_ds(
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.Curve]:
+        """Creates a curve plot from the provided dataset.
+
+        Given a filtered dataset, this method generates a curve visualization showing
+        the relationship between a continuous input variable and the result variable.
+        When multiple benchmark repetitions are available, standard deviation bounds
+        can also be displayed using a spread plot.
+
+        Args:
+            dataset (xr.Dataset): The dataset containing benchmark results.
+            result_var (Parameter): The result variable to plot.
+            **kwargs: Additional keyword arguments passed to the curve plot options.
+
+        Returns:
+            Optional[hv.Curve]: A curve plot with optional standard deviation spread.
+        """
         hvds = hv.Dataset(dataset)
         title = self.title_from_ds(dataset, result_var, **kwargs)
         # print(result_var.name)

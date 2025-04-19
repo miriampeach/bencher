@@ -28,6 +28,18 @@ class ScatterResult(HoloviewResult):
         override: bool = False,
         **kwargs,  # pylint: disable=unused-argument
     ) -> List[hv.Scatter]:
+        """Creates jittered scatter plots for all result variables.
+
+        This method generates scatter plots with jittering to better visualize
+        overlapping data points. It creates one scatter plot for each result variable.
+
+        Args:
+            override (bool, optional): Whether to override filter restrictions. Defaults to False.
+            **kwargs: Additional keyword arguments passed to the scatter plot options.
+
+        Returns:
+            List[hv.Scatter]: A list of scatter plots, one for each result variable.
+        """
         return self.overlay_plots(
             partial(self.to_scatter_jitter_single, override=override, **kwargs)
         )
@@ -35,6 +47,21 @@ class ScatterResult(HoloviewResult):
     def to_scatter_jitter_single(
         self, result_var: Parameter, override: bool = True, **kwargs
     ) -> Optional[hv.Scatter]:
+        """Creates a jittered scatter plot for a single result variable.
+
+        This method generates a scatter plot with jittering for a specific result variable,
+        allowing better visualization of overlapping points, particularly useful when
+        displaying multiple repetitions of benchmark results.
+
+        Args:
+            result_var (Parameter): The result variable to plot.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            **kwargs: Additional keyword arguments passed to the scatter plot options.
+
+        Returns:
+            Optional[hv.Scatter]: A scatter plot if data matches criteria,
+                               otherwise returns filter match results.
+        """
         matches = PlotFilter(
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),

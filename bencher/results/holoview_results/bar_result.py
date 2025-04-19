@@ -23,6 +23,20 @@ class BarResult(HoloviewResult):
     def to_bar(
         self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.panel]:
+        """Generates a bar chart from benchmark data.
+
+        This method applies filters to ensure the data is appropriate for a bar chart
+        and then passes the filtered data to to_bar_ds for rendering.
+
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+
+        Returns:
+            Optional[pn.panel]: A panel containing the bar chart if data is appropriate,
+                              otherwise returns filter match results.
+        """
         return self.filter(
             self.to_bar_ds,
             float_range=VarRange(0, 0),
@@ -38,6 +52,19 @@ class BarResult(HoloviewResult):
         )
 
     def to_bar_ds(self, dataset: xr.Dataset, result_var: Parameter = None, **kwargs):
+        """Creates a bar chart from the provided dataset.
+
+        Given a filtered dataset, this method generates a bar chart visualization showing
+        values of the result variable, potentially grouped by categorical variables.
+
+        Args:
+            dataset (xr.Dataset): The dataset containing benchmark results.
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            **kwargs: Additional keyword arguments passed to the bar chart options.
+
+        Returns:
+            hvplot.element.Bars: A bar chart visualization of the benchmark data.
+        """
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 2:
             by = self.plt_cnt_cfg.cat_vars[1].name
