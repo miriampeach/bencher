@@ -6,9 +6,14 @@ from bencher.results.bench_result_base import EmptyContainer
 from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
-from bencher.results.holoview_result import HoloviewResult
-from bencher.results.holoview_results.box_whisker import BoxWhiskerResult
-from bencher.results.holoview_results.scatter import ScatterResult
+from bencher.results.holoview_results.holoview_result import HoloviewResult
+from bencher.results.holoview_results.box_whisker_result import BoxWhiskerResult
+from bencher.results.holoview_results.scatter_result import ScatterResult
+from bencher.results.holoview_results.bar_result import BarResult
+from bencher.results.holoview_results.line_result import LineResult
+from bencher.results.holoview_results.curve_result import CurveResult
+from bencher.results.holoview_results.heatmap_result import HeatmapResult
+from bencher.results.holoview_results.surface_result import SurfaceResult
 from bencher.results.hvplot_result import HvplotResult
 from bencher.results.dataset_result import DataSetResult
 from bencher.utils import listify
@@ -18,6 +23,11 @@ class BenchResult(
     PlotlyResult,
     BoxWhiskerResult,
     ScatterResult,
+    LineResult,
+    BarResult,
+    HeatmapResult,
+    CurveResult,
+    SurfaceResult,
     HoloviewResult,
     HvplotResult,
     VideoSummaryResult,
@@ -34,12 +44,12 @@ class BenchResult(
     def default_plot_callbacks():
         return [
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
-            HoloviewResult.to_bar,
+            BarResult.to_bar,
             # BoxWhiskerResult.to_boxplot,
             ScatterResult.to_scatter_jitter,  # needs to be fixed
-            HoloviewResult.to_curve,
-            HoloviewResult.to_line,
-            HoloviewResult.to_heatmap,
+            CurveResult.to_curve,
+            LineResult.to_line,
+            HeatmapResult.to_heatmap,
             HvplotResult.to_histogram,
             PlotlyResult.to_volume,
             # PanelResult.to_video,
@@ -48,7 +58,7 @@ class BenchResult(
 
     @staticmethod
     def plotly_callbacks():
-        return [HoloviewResult.to_surface, PlotlyResult.to_volume]
+        return [SurfaceResult.to_surface, PlotlyResult.to_volume]
 
     def plot(self) -> pn.panel:
         """Plots the benchresult using the plot callbacks defined by the bench run
