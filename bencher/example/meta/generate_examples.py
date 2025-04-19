@@ -36,7 +36,9 @@ bench.get_result().to_auto_plots()
     ]
     output_path = Path(f"docs/reference/{output_path}/ex_{title}.ipynb")
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(nbf.writes(nb), encoding="utf-8")
+    # Add a newline character at the end to ensure proper end-of-file
+    notebook_content = nbf.writes(nb) + "\n"
+    output_path.write_text(notebook_content, encoding="utf-8")
 
 
 if __name__ == "__main__":
