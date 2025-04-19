@@ -10,7 +10,7 @@ class DataStructureBenchmark(bch.ParametrizedSweep):
     """Example class for comparing different data structure operations with two output variables."""
 
     operation = bch.StringSweep(
-        ["list_append", "dict_insert", "set_add", "queue_operation"],
+        ["list_append", "dict_insert"],
         doc="Type of data structure operation to benchmark",
     )
     execution_time = bch.ResultVar(units="ms", doc="Time taken to complete operations")
@@ -29,6 +29,7 @@ class DataStructureBenchmark(bch.ParametrizedSweep):
 
         # Simple simulations of different data structure operations
         # In a real benchmark, you would implement or measure actual operations
+        
 
         if self.operation == "list_append":
             # List append operations (typically fast for adding elements)
@@ -38,14 +39,7 @@ class DataStructureBenchmark(bch.ParametrizedSweep):
             # Dictionary insertions (hash table operations)
             self.execution_time = random.gauss(mu=6.5, sigma=1.2)
             self.memory_usage = random.gauss(mu=180.0, sigma=25.0)
-        elif self.operation == "set_add":
-            # Set additions (hash table with uniqueness checks)
-            self.execution_time = random.gauss(mu=7.2, sigma=1.5)
-            self.memory_usage = random.gauss(mu=150.0, sigma=15.0)
-        else:  # queue_operation
-            # Queue operations (FIFO data structure)
-            self.execution_time = random.gauss(mu=4.5, sigma=0.8)
-            self.memory_usage = random.gauss(mu=110.0, sigma=10.0)
+       
 
         return super().__call__(**kwargs)
 
