@@ -120,6 +120,7 @@ clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ours.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
 
+generate-docs = "python /workspaces/bencher/bencher/example/meta/generate_examples.py"
 docs = "rm -rf docs/builtdocs; rm -rf docs/jupyter_execute; sphinx-build -b html docs docs/builtdocs"
 
 
