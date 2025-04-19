@@ -26,10 +26,10 @@ class ExampleCat1D(bch.ParametrizedSweep):
 
         if self.population == "population1":
             self.age = random.gauss(mu=50.0, sigma=10.0)
-            self.children = random.gauss(mu=1.5)
+            self.children = random.gauss(mu=1.5, sigma=0.5)
         else:
             self.age = random.gauss(mu=60, sigma=20)
-            self.children = random.gauss(mu=3.0)
+            self.children = random.gauss(mu=3.0, sigma=1.0)
 
         return super().__call__(**kwargs)
 
