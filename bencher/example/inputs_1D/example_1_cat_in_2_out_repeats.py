@@ -3,20 +3,21 @@ import bencher as bch
 
 random.seed(0)
 
+
 class ExampleCat1D(bch.ParametrizedSweep):
     population = bch.StringSweep(["population1", "population2"], doc="Distribution to sample from")
-    age= bch.ResultVar(units="v", doc="sin of theta")
-    children= bch.ResultVar(units="v", doc="sin of theta")
+    age = bch.ResultVar(units="v", doc="sin of theta")
+    children = bch.ResultVar(units="v", doc="sin of theta")
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
 
         if self.population == "population1":
-            self.age= random.gauss(mu=50.0,sigma=10.0)
-            self.children= random.gauss(mu=1.5)
+            self.age = random.gauss(mu=50.0, sigma=10.0)
+            self.children = random.gauss(mu=1.5)
         else:
-            self.age= random.gauss(mu=60,sigma=20)
-            self.children= random.gauss(mu=3.)
+            self.age = random.gauss(mu=60, sigma=20)
+            self.children = random.gauss(mu=3.0)
 
         return super().__call__(**kwargs)
 
