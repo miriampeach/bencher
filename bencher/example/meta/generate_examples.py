@@ -60,6 +60,10 @@ if __name__ == "__main__":
         "/workspaces/bencher/bencher/example/inputs_1D/example_1_cat_in_2_out_repeats.py", "1D"
     )
 
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_2D/example_2_cat_in_4_out_repeats.py", "1D"
+    )
+
     # todo, enable
     # convert_example_to_jupyter_notebook(
     #     "/workspaces/bencher/bencher/example/example_composable_container_video.py",
