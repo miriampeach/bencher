@@ -27,18 +27,18 @@ use_tap = True
 class HoloviewResult(PanelResult):
     @staticmethod
     def set_default_opts(width=600, height=600):
-        width_heigh = {"width": width, "height": height, "tools": ["hover"]}
+        width_height = {"width": width, "height": height, "tools": ["hover"]}
         hv.opts.defaults(
-            hv.opts.Curve(**width_heigh),
-            hv.opts.Points(**width_heigh),
-            hv.opts.Bars(**width_heigh),
-            hv.opts.Scatter(**width_heigh),
-            hv.opts.BoxWhisker(**width_heigh),
-            hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
+            hv.opts.Curve(**width_height),
+            hv.opts.Points(**width_height),
+            hv.opts.Bars(**width_height),
+            hv.opts.Scatter(**width_height),
+            hv.opts.BoxWhisker(**width_height),
+            hv.opts.HeatMap(cmap="plasma", **width_height, colorbar=True),
             # hv.opts.Surface(**width_heigh),
             hv.opts.GridSpace(plot_size=400),
         )
-        return width_heigh
+        return width_height
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
