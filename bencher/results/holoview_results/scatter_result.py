@@ -36,12 +36,11 @@ class ScatterResult(HoloviewResult):
         ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
-            pt = (
+            return (
                 ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
                 .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
                 .overlay("repeat")
             )
-            return pt
         return matches.to_panel()
 
     def to_scatter(self, override: bool = True, **kwargs) -> Optional[pn.panel]:
