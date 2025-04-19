@@ -8,17 +8,17 @@ random.seed(0)
 
 class ExampleCat1D(bch.ParametrizedSweep):
     """Example class for categorical parameter sweep with two output variables."""
-    
+
     population = bch.StringSweep(["population1", "population2"], doc="Distribution to sample from")
     age = bch.ResultVar(units="v", doc="Age of individual from population")
     children = bch.ResultVar(units="v", doc="Number of children of individual from population")
 
     def __call__(self, **kwargs) -> dict:
         """Execute the parameter sweep for the given population.
-        
+
         Args:
             **kwargs: Additional parameters to update before executing
-            
+
         Returns:
             dict: Dictionary containing the outputs of the parameter sweep
         """
@@ -39,11 +39,11 @@ def example_1_cat_in_2_out_repeats(
 ) -> bch.Bench:
     """This example shows how to sample a 1-dimensional categorical variable with multiple repeats
     and plot the result of two output variables from that parameter sweep.
-    
+
     Args:
         run_cfg: Configuration for the benchmark run
         report: Report to append the results to
-        
+
     Returns:
         bch.Bench: The benchmark object
     """

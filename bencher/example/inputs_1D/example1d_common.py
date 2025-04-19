@@ -21,11 +21,11 @@ class DataSource:
 
     def call(self, index: int, repeat: int = None) -> int:
         """Retrieve a data point at the specified index and repeat count.
-        
+
         Args:
             index: The index of the data row to access
             repeat: The specific repeat count to use. If None, uses and increments internal counter
-            
+
         Returns:
             int: The value at the specified index and repeat position
         """
@@ -37,14 +37,14 @@ class DataSource:
 
 class Example1D(bch.ParametrizedSweep):
     """Example 1D parameter sweep class with one input and two output dimensions."""
-    
+
     index = bch.IntSweep(default=0, bounds=[0, 5], doc="Input index", units="rad", samples=30)
     output = bch.ResultVar(units="v", doc="Output value from data source 1")
     output2 = bch.ResultVar(units="v", doc="Negated output value from data source 2")
 
     def __init__(self, **params):
         """Initialize the Example1D sweep with two data sources.
-        
+
         Args:
             **params: Parameters to pass to the parent class constructor
         """
@@ -54,10 +54,10 @@ class Example1D(bch.ParametrizedSweep):
 
     def __call__(self, **kwargs) -> dict:
         """Execute the parameter sweep for the given parameters.
-        
+
         Args:
             **kwargs: Additional parameters to update before executing
-            
+
         Returns:
             dict: Dictionary containing the outputs of the parameter sweep
         """
@@ -70,13 +70,13 @@ class Example1D(bch.ParametrizedSweep):
 def example_1_in_2_out(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
-    """This example shows how to sample a 1-dimensional integer variable and plot 
+    """This example shows how to sample a 1-dimensional integer variable and plot
     the result of two output variables from that parameter sweep.
-    
+
     Args:
         run_cfg: Configuration for the benchmark run
         report: Report to append the results to
-        
+
     Returns:
         bch.Bench: The benchmark object
     """
@@ -89,17 +89,17 @@ def example_1_in_2_out(
 
 if __name__ == "__main__":
     run_config = bch.BenchRunCfg()
-    report = bch.BenchReport()
-    example_1_in_2_out(run_config, report)
+    report_obj = bch.BenchReport()
+    example_1_in_2_out(run_config, report_obj)
 
     run_config.repeats = 4
-    example_1_in_2_out(run_config, report)
+    example_1_in_2_out(run_config, report_obj)
 
     # run_config.over_time = True
     # run_config.auto_plot = False
     # for i in range(4):
-    #     example_1_in_2_out(run_config, report)
+    #     example_1_in_2_out(run_config, report_obj)
 
     # run_config.auto_plot = True
-    # example_1_in_2_out(run_config, report)
-    report.show()
+    # example_1_in_2_out(run_config, report_obj)
+    report_obj.show()

@@ -28,11 +28,11 @@ def example_0_in_2_out(
 ) -> bch.Bench:
     """This example shows how to sample a 0-dimensional variable (no input parameters)
     that produces two output values and plot the results.
-    
+
     Args:
         run_cfg: Configuration for the benchmark run
         report: Report to append the results to
-        
+
     Returns:
         bch.Bench: The benchmark object
     """

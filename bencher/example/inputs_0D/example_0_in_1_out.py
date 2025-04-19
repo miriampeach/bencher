@@ -44,20 +44,20 @@ def example_0_in_1_out(
 
 if __name__ == "__main__":
     run_config = bch.BenchRunCfg(repeats=100)
-    report = bch.BenchReport()
-    # example_0_in_1_out(run_config, report).report.show()
+    report_obj = bch.BenchReport()
+    # example_0_in_1_out(run_config, report_obj).report.show()
 
     # run_cfg.over_time = True
     # run_cfg.cache_samples = True
     # for i in range(4):
-    #     example_0_in_1_out(run_cfg, report)
+    #     example_0_in_1_out(run_cfg, report_obj)
 
     run_config.over_time = True
     run_config.auto_plot = False
     for _ in range(4):
-        example_0_in_1_out(run_config, report)
+        example_0_in_1_out(run_config, report_obj)
 
     run_config.auto_plot = True
-    example_0_in_1_out(run_config, report)
+    example_0_in_1_out(run_config, report_obj)
 
-    report.show()
+    report_obj.show()
