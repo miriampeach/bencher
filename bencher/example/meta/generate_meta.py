@@ -81,7 +81,14 @@ class BenchMetaGen(bch.ParametrizedSweep):
         run_cfg.plot_size = 500
 
         # Limit the variables to the specified counts
-        float_vars = self.float_var_names[: self.float_vars_count]
+        float_vars = []
+        # Apply the max_level=3 limit to the 3rd and subsequent float variables
+        for i, var_name in enumerate(self.float_var_names[: self.float_vars_count]):
+            if i >= 2:  # Third variable (index 2) and beyond
+                float_vars.append(bch.p(var_name, max_level=3))
+            else:
+                float_vars.append(var_name)
+
         categorical_vars = self.categorical_var_names[: self.categorical_vars_count]
         input_vars = float_vars + categorical_vars
 
