@@ -86,8 +86,15 @@ py312 = ["py312", "test", "rerun"]
 
 [tool.pixi.tasks]
 #AI AGENT TASKS
-agent-finish = { depends-on = ["git-commit-all", "fix-commit-push"] }
-agent-iterate = { depends-on = ["ci"] }
+
+#use this task to test any changes to the code, it will run docs, lint, and tests. 
+agent-iterate = { depends-on = ["generate-docs", "ci"] }
+#Once the agent-iterate task completes without any errors use this task to push the changes to the repo.
+agent-finish = { depends-on = [
+    "git-commit-all",
+    "fix-commit-push",
+    "fix-commit-push",
+] }
 
 pre-commit = "pre-commit run -a"
 pre-commit-update = "pre-commit autoupdate"
@@ -97,7 +104,7 @@ ruff-lint = "ruff check . --fix"
 pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
 lint = { depends-on = ["ruff-lint", "pylint"] }
 style = { depends-on = ["format", "lint"] }
-commit-format = "git commit -A -m'autoformat code' || true"
+commit-format = "git commit -a -m'autoformat code' || true"
 test = "pytest"
 coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
