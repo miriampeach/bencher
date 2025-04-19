@@ -17,6 +17,14 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class LineResult(HoloviewResult):
+    """A class for creating line plot visualizations from benchmark results.
+
+    Line plots are effective for visualizing trends in data over a continuous variable.
+    This class provides methods to generate interactive line plots from benchmark data,
+    with options for adding interactive tap functionality to display detailed information
+    about specific data points.
+    """
+
     def to_line(
         self,
         result_var: Parameter = None,

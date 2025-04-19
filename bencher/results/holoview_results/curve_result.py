@@ -12,6 +12,14 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class CurveResult(HoloviewResult):
+    """A class for creating curve plots from benchmark results.
+
+    Curve plots are useful for visualizing the relationship between a continuous
+    input variable and a result variable. This class provides methods to generate
+    line plots that can also display standard deviation bounds when benchmark runs
+    include multiple repetitions.
+    """
+
     def to_curve(self, result_var: Parameter = None, override: bool = True, **kwargs):
         return self.filter(
             self.to_curve_ds,

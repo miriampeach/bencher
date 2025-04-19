@@ -14,6 +14,14 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class SurfaceResult(HoloviewResult):
+    """A class for creating 3D surface plots from benchmark results.
+
+    This class provides methods to visualize benchmark data as 3D surface plots,
+    which are useful for showing relationships between two input variables and
+    a result variable. Surface plots can also display standard deviation bounds
+    when benchmark runs include multiple repetitions.
+    """
+
     def to_surface(
         self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.pane.Pane]:

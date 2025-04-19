@@ -16,6 +16,18 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class ScatterResult(HoloviewResult):
+    """A class for creating scatter plots from benchmark results.
+
+    Scatter plots are useful for visualizing the distribution of individual data points
+    and identifying patterns, clusters, or outliers. This class provides methods to
+    generate scatter plots with jittering capabilities to better visualize overlapping
+    points, particularly useful for displaying benchmark results across multiple repetitions.
+
+    Methods include:
+    - to_scatter_jitter: Creates scatter plots with jittering for better visualization of overlapping points
+    - to_scatter: Creates standard scatter plots that can be grouped by categorical variables
+    """
+
     def to_scatter_jitter(
         self,
         override: bool = False,

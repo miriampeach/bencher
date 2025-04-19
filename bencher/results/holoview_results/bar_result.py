@@ -12,6 +12,14 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class BarResult(HoloviewResult):
+    """A class for creating bar chart visualizations from benchmark results.
+
+    Bar charts are effective for comparing values across categorical variables or
+    discrete data points. This class provides methods to generate bar charts that
+    display benchmark results, particularly useful for comparing performance metrics
+    between different configurations or categories.
+    """
+
     def to_bar(
         self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.panel]:

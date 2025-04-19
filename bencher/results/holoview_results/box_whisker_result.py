@@ -17,6 +17,15 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class BoxWhiskerResult(HoloviewResult):
+    """A class for creating box and whisker plots from benchmark results.
+
+    Box and whisker plots are useful for visualizing the distribution of data,
+    including the median, quartiles, and potential outliers. This class provides
+    methods to generate these plots from benchmark data, particularly useful for
+    comparing distributions across different categorical variables or between
+    different repetitions of the same benchmark.
+    """
+
     def to_boxplot(
         self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.panel]:

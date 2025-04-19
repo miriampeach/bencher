@@ -17,6 +17,14 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
 class HeatmapResult(HoloviewResult):
+    """A class for creating heatmap visualizations from benchmark results.
+
+    Heatmaps are effective for visualizing the relationship between two input variables
+    and a result variable by using color intensity to represent the result values.
+    This class provides methods for generating interactive heatmaps that can display
+    additional information when hovering over or selecting points on the heatmap.
+    """
+
     def to_heatmap(
         self,
         result_var: Parameter = None,
