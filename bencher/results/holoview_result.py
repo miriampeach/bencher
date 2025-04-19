@@ -36,6 +36,7 @@ class HoloviewResult(PanelResult):
             hv.opts.Points(**width_heigh),
             hv.opts.Bars(**width_heigh),
             hv.opts.Scatter(**width_heigh),
+            hv.opts.BoxWhisker(**width_heigh),
             hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
             # hv.opts.Surface(**width_heigh),
             hv.opts.GridSpace(plot_size=400),
@@ -88,7 +89,7 @@ class HoloviewResult(PanelResult):
         # return time_widget_args
 
     def to_bar(
-        self, result_var: Parameter = None, override: bool = False, **kwargs
+        self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.panel]:
         return self.filter(
             self.to_bar_ds,
@@ -109,6 +110,8 @@ class HoloviewResult(PanelResult):
         if self.plt_cnt_cfg.cat_cnt >= 2:
             by = self.plt_cnt_cfg.cat_vars[1].name
         da_plot = dataset[result_var.name]
+
+        print("by", by)
         title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
@@ -146,6 +149,7 @@ class HoloviewResult(PanelResult):
         tap_var=None,
         tap_container: pn.pane.panel = None,
         target_dimension=2,
+        override: bool = True,
         **kwargs,
     ) -> Optional[pn.panel]:
         if tap_var is None:
@@ -170,6 +174,7 @@ class HoloviewResult(PanelResult):
             target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
@@ -183,7 +188,7 @@ class HoloviewResult(PanelResult):
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
-    def to_curve(self, result_var: Parameter = None, **kwargs):
+    def to_curve(self, result_var: Parameter = None, override: bool = True, **kwargs):
         return self.filter(
             self.to_curve_ds,
             float_range=VarRange(1, 1),
@@ -194,6 +199,7 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
@@ -208,7 +214,6 @@ class HoloviewResult(PanelResult):
         # find pairs of {var_name} {var_name}_std to plot the line and their spreads.
         var = result_var.name
         std_var = f"{var}_std"
-
         pt *= hvds.to(hv.Curve, vdims=var, label=var).opts(title=title, **kwargs)
         # Only create a Spread if the matching _std variable exists
         if std_var in dataset.data_vars:
@@ -232,6 +237,7 @@ class HoloviewResult(PanelResult):
         tap_container: pn.pane.panel = None,
         tap_container_direction: pn.Column | pn.Row = None,
         target_dimension=2,
+        override: bool = True,
         **kwargs,
     ) -> Optional[pn.panel]:
         if tap_var is None:
@@ -258,6 +264,7 @@ class HoloviewResult(PanelResult):
             target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
@@ -446,8 +453,10 @@ class HoloviewResult(PanelResult):
         bound_plot = pn.Column(title, *cont_instances)
         return pn.Row(htmap, bound_plot)
 
-    def to_error_bar(self) -> hv.Bars:
-        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
+    def to_error_bar(self, result_var: Parameter | str = None, **kwargs) -> hv.Bars:
+        return self.to_hv_dataset(ReduceType.REDUCE, result_var=result_var, **kwargs).to(
+            hv.ErrorBars
+        )
 
     def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
         ds = self.to_hv_dataset(reduce)
@@ -456,12 +465,12 @@ class HoloviewResult(PanelResult):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self, **kwargs) -> Optional[pn.panel]:
+    def to_scatter(self, override: bool = True, **kwargs) -> Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
-        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter")
+        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter", override=override)
         if match_res.overall:
             hv_ds = self.to_hv_dataset(ReduceType.SQUEEZE)
             by = None
@@ -559,43 +568,18 @@ class HoloviewResult(PanelResult):
     #         return pt
     #     return matches.to_panel()
 
-    def to_scatter_jitter(
-        self,
-        result_var: Parameter = None,
-        override: bool = False,
-        **kwargs,  # pylint: disable=unused-argument
-    ) -> List[hv.Scatter]:
-        return self.overlay_plots(
-            partial(self.to_scatter_jitter_single, override=override, **kwargs)
-        )
-
-    def to_scatter_jitter_single(
-        self, result_var: Parameter, override: bool = True, **kwargs
-    ) -> Optional[hv.Scatter]:
-        matches = PlotFilter(
-            float_range=VarRange(0, 0),
-            cat_range=VarRange(0, None),
-            repeats_range=VarRange(2, None),
-            input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
-        if matches.overall:
-            ds = self.to_hv_dataset(ReduceType.NONE)
-            pt = (
-                ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
-                .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
-                .overlay("repeat")
-            )
-            return pt
-        return matches.to_panel()
-
     def to_heatmap_single(
-        self, result_var: Parameter, reduce: ReduceType = ReduceType.AUTO, **kwargs
+        self,
+        result_var: Parameter,
+        override: bool = True,
+        reduce: ReduceType = ReduceType.AUTO,
+        **kwargs,
     ) -> hv.HeatMap:
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_heatmap")
+        ).matches_result(self.plt_cnt_cfg, "to_heatmap", override)
         if matches_res.overall:
             z = result_var
             title = f"{z.name} vs ("
@@ -682,7 +666,9 @@ class HoloviewResult(PanelResult):
         """
         return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
 
-    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
+    def to_surface(
+        self, result_var: Parameter = None, override: bool = True, **kwargs
+    ) -> Optional[pn.pane.Pane]:
         return self.filter(
             self.to_surface_ds,
             float_range=VarRange(2, None),
@@ -692,11 +678,17 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
     def to_surface_ds(
-        self, dataset: xr.Dataset, result_var: Parameter, alpha: float = 0.3, **kwargs
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        override: bool = True,
+        alpha: float = 0.3,
+        **kwargs,
     ) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D surface plot
 
@@ -711,7 +703,7 @@ class HoloviewResult(PanelResult):
             cat_range=VarRange(0, None),
             vector_len=VarRange(1, 1),
             result_vars=VarRange(1, 1),
-        ).matches_result(self.plt_cnt_cfg, "to_surface_hv")
+        ).matches_result(self.plt_cnt_cfg, "to_surface_hv", override)
         if matches_res.overall:
             # xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var)
 

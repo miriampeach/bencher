@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional
 from dataclasses import dataclass
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
+import logging
 import panel as pn
 
 
@@ -45,7 +46,7 @@ class VarRange:
 
     def matches_info(self, val, name):
         match = self.matches(val)
-        info = f"{name}\t{match}\t{self.lower_bound}>= {val} <={self.upper_bound}"
+        info = f"{name}\t{self.lower_bound}>= {val} <={self.upper_bound} is {match}"
         return match, info
 
     def __str__(self) -> str:
@@ -65,7 +66,7 @@ class PlotFilter:
     input_range: VarRange = VarRange(1, None)
 
     def matches_result(
-        self, plt_cnt_cfg: PltCntCfg, plot_name: str, override: bool = False
+        self, plt_cnt_cfg: PltCntCfg, plot_name: str, override: bool
     ) -> PlotMatchesResult:
         """Checks if the result data signature matches the type of data the plot is able to display."""
         return PlotMatchesResult(self, plt_cnt_cfg, plot_name, override)
@@ -80,7 +81,7 @@ class PlotMatchesResult:
         plot_filter: PlotFilter,
         plt_cnt_cfg: PltCntCfg,
         plot_name: str,
-        override: bool = False,
+        override: bool,
     ):
         match_info = []
         matches = []
@@ -99,7 +100,7 @@ class PlotMatchesResult:
             match, info = m.matches_info(cnt, name)
             matches.append(match)
             if not match:
-                match_info.append(info)
+                match_info.append(f"\t{info}")
         if override:
             match_info.append(f"override: {override}")
             self.overall = True
@@ -110,10 +111,8 @@ class PlotMatchesResult:
         self.matches_info = "\n".join(match_info).strip()
         self.plt_cnt_cfg = plt_cnt_cfg
 
-        if self.plt_cnt_cfg.print_debug:
-            print(f"checking {plot_name} result: {self.overall}")
-            if not self.overall:
-                print(self.matches_info)
+        # if self.plt_cnt_cfg.print_debug:
+        logging.info(self.matches_info)
 
     def to_panel(self, **kwargs) -> Optional[pn.pane.Markdown]:
         if self.plt_cnt_cfg.print_debug:
