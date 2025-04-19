@@ -1,4 +1,4 @@
-Fix the box and whisker code.  Implement box and whisker using holoviews and also hvplot.  The code needs to be able to accept arbirary dataframes (that pass the requirements filter). 
+Add a violin plot result type.  use the existing code as a template. Add tests
 
 Workflow:
     Run the task `pixi r agent-iterate` and continue to debug the output of the task until it passes.
