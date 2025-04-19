@@ -34,7 +34,6 @@ class BenchResult(
     HvplotResult,
     VideoSummaryResult,
     DataSetResult,
-
 ):  # noqa pylint: disable=too-many-ancestors
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
