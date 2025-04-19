@@ -1,3 +1,5 @@
+"""This file demonstrates benchmarking with categorical inputs and multiple outputs with repeats."""
+
 import random
 import bencher as bch
 
@@ -5,11 +7,21 @@ random.seed(0)
 
 
 class ExampleCat1D(bch.ParametrizedSweep):
+    """Example class for categorical parameter sweep with two output variables."""
+    
     population = bch.StringSweep(["population1", "population2"], doc="Distribution to sample from")
-    age = bch.ResultVar(units="v", doc="sin of theta")
-    children = bch.ResultVar(units="v", doc="sin of theta")
+    age = bch.ResultVar(units="v", doc="Age of individual from population")
+    children = bch.ResultVar(units="v", doc="Number of children of individual from population")
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs) -> dict:
+        """Execute the parameter sweep for the given population.
+        
+        Args:
+            **kwargs: Additional parameters to update before executing
+            
+        Returns:
+            dict: Dictionary containing the outputs of the parameter sweep
+        """
         self.update_params_from_kwargs(**kwargs)
 
         if self.population == "population1":
@@ -25,7 +37,16 @@ class ExampleCat1D(bch.ParametrizedSweep):
 def example_1_cat_in_2_out_repeats(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
-    """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
+    """This example shows how to sample a 1-dimensional categorical variable with multiple repeats
+    and plot the result of two output variables from that parameter sweep.
+    
+    Args:
+        run_cfg: Configuration for the benchmark run
+        report: Report to append the results to
+        
+    Returns:
+        bch.Bench: The benchmark object
+    """
 
     if run_cfg is None:
         run_cfg = bch.BenchRunCfg()

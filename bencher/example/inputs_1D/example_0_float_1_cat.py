@@ -1,3 +1,5 @@
+"""This file demonstrates benchmarking with both categorical and float variables."""
+
 import bencher as bch
 from bencher.example.meta.example_meta import BenchableObject
 

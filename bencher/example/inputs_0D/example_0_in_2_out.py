@@ -5,14 +5,14 @@ import random
 
 
 class SimpleFloat0D(bch.ParametrizedSweep):
-    """This class has 0 input dimensions and 1 output dimensions.  It samples from a gaussian distribution"""
+    """This class has 0 input dimensions and 2 output dimensions. It samples from Gaussian distributions"""
 
     # This defines a variable that we want to plot
     output1 = bch.ResultVar(units="ul", doc="a sample from a gaussian distribution")
     output2 = bch.ResultVar(units="ul", doc="a sample from a gaussian distribution")
 
     def __call__(self, **kwargs) -> dict:
-        """Generate a sample from a uniform distribution
+        """Generate samples from Gaussian distributions
 
         Returns:
             dict: a dictionary with all the result variables in the ParametrisedSweep class as named key value pairs.
@@ -26,7 +26,16 @@ class SimpleFloat0D(bch.ParametrizedSweep):
 def example_0_in_2_out(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
-    """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
+    """This example shows how to sample a 0-dimensional variable (no input parameters)
+    that produces two output values and plot the results.
+    
+    Args:
+        run_cfg: Configuration for the benchmark run
+        report: Report to append the results to
+        
+    Returns:
+        bch.Bench: The benchmark object
+    """
 
     bench = SimpleFloat0D().to_bench(run_cfg, report)
     bench.plot_sweep()
