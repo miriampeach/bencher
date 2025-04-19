@@ -3,7 +3,6 @@ from pathlib import Path
 
 
 def convert_example_to_jupyter_notebook(filename: str, output_path: str):
-    # print
     source_path = Path(filename)
 
     nb = nbf.v4.new_notebook()
@@ -38,7 +37,6 @@ bench.get_result().to_auto_plots()
 
 
 if __name__ == "__main__":
-    
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D"
     )
