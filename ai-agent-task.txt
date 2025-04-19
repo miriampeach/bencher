@@ -1,4 +1,4 @@
-Add a violin plot result type.  use the existing code as a template. Add tests
+Add a violin plot result type. Use the existing code as a template. Add tests
 
 Workflow:
     Run the task `pixi r agent-iterate` and continue to debug the output of the task until it passes.
