@@ -29,7 +29,6 @@ class DataStructureBenchmark(bch.ParametrizedSweep):
 
         # Simple simulations of different data structure operations
         # In a real benchmark, you would implement or measure actual operations
-        
 
         if self.operation == "list_append":
             # List append operations (typically fast for adding elements)
@@ -39,7 +38,6 @@ class DataStructureBenchmark(bch.ParametrizedSweep):
             # Dictionary insertions (hash table operations)
             self.execution_time = random.gauss(mu=6.5, sigma=1.2)
             self.memory_usage = random.gauss(mu=180.0, sigma=25.0)
-       
 
         return super().__call__(**kwargs)
 
