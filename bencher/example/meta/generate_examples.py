@@ -38,6 +38,15 @@ bench.get_result().to_auto_plots()
 
 
 if __name__ == "__main__":
+    
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D"
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D"
+    )
+
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_1_out.py", "1D"
     )
