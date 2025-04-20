@@ -5,7 +5,9 @@ import holoviews as hv
 from param import Parameter
 import xarray as xr
 
-from bencher.results.holoview_results.distribution_result import DistributionResult
+from bencher.results.holoview_results.distribution_result.distribution_result import (
+    DistributionResult,
+)
 
 
 class ViolinResult(DistributionResult):
