@@ -4,9 +4,10 @@ import panel as pn
 import holoviews as hv
 from param import Parameter
 import xarray as xr
-import numpy as np
 
-from bencher.results.holoview_results.distribution_result import DistributionResult
+from bencher.results.holoview_results.distribution_result.distribution_result import (
+    DistributionResult,
+)
 
 
 class ScatterJitterResult(DistributionResult):

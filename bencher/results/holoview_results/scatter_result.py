@@ -1,9 +1,6 @@
 from __future__ import annotations
-from typing import Optional, List
+from typing import Optional
 import panel as pn
-import holoviews as hv
-from param import Parameter
-from functools import partial
 
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import hvplot.pandas  # noqa pylint: disable=duplicate-code,unused-import
