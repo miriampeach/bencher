@@ -15,7 +15,7 @@ from bencher.variables.results import ResultVar
 
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 
-from bokeh.sampledata.autompg import autompg as df
+from bencher.utils import params_to_str
 
 
 class BoxWhiskerResult(HoloviewResult):
@@ -78,40 +78,12 @@ class BoxWhiskerResult(HoloviewResult):
         # Create plot title
         title = self.title_from_ds(dataset[var_name], result_var, **kwargs)
 
-        df = dataset[var_name].to_dataframe().reset_index()
-
-        # Create a box plot directly using the HoloViews interface
-        # We'll group by all dimensions except 'repeat'
-        data = []
-        cat_dims = []
-
-        # Find the categorical dimension names that we'll use for grouping
-        for dim in dataset[var_name].dims:
-            if dim != "repeat" and isinstance(
-                dataset[var_name].coords[dim].values[0], (str, bytes)
-            ):
-                cat_dims.append(dim)
-
-        # If we have categorical dimensions, create a box for each category
-        if cat_dims:
-            # Convert to dataframe format that HoloViews expects
-            df = dataset[var_name].to_dataframe().reset_index()
-            # Only keep the categorical dimensions and the value
-            box_df = df[cat_dims + [var_name]]
-            # Create BoxWhisker using the dataframe
-            box_whisker = hv.BoxWhisker(box_df, kdims=cat_dims, vdims=[var_name])
-        else:
-            # Without categorical dimensions, create a single box
-            values = dataset[var_name].values.flatten()
-            box_whisker = hv.BoxWhisker(values, vdims=[var_name])
-
-        # Apply styling options
-        ylabel = f"{var_name}"
-        if hasattr(result_var, "units") and result_var.units:
-            ylabel += f" [{result_var.units}]"
-
-        box_whisker = box_whisker.opts(
-            title=title, ylabel=ylabel, box_fill_color="lightblue", **kwargs
+        return hv.BoxWhisker(
+            dataset[var_name].to_dataframe().reset_index(),
+            kdims=params_to_str(self.plt_cnt_cfg.cat_vars),
+            vdims=[var_name],
+        ).opts(
+            title=title,
+            ylabel=f"{var_name} [{result_var.units}]",
+            **kwargs,
         )
-
-        return box_whisker
