@@ -5,13 +5,9 @@ import holoviews as hv
 from param import Parameter
 import xarray as xr
 
-import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
-import hvplot.pandas  # noqa pylint: disable=duplicate-code,unused-import
 from bencher.results.bench_result_base import ReduceType
-
 from bencher.plotting.plot_filter import VarRange
 from bencher.variables.results import ResultVar
-
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 from bencher.utils import params_to_str
 

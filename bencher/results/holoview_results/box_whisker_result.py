@@ -5,9 +5,6 @@ import holoviews as hv
 from param import Parameter
 import xarray as xr
 
-import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
-import hvplot.pandas  # noqa pylint: disable=duplicate-code,unused-import
-
 from bencher.results.holoview_results.distribution_result import DistributionResult
 
 
