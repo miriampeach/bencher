@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import logging
 
-from typing import List
+from typing import List, Optional, Dict, Any, Callable, Tuple, Union, TypeVar, cast
 
 import param
 import panel as pn
@@ -15,16 +15,23 @@ from bencher.variables.results import OptDir
 from bencher.job import Executors
 from bencher.results.laxtex_result import to_latex
 
+T = TypeVar('T')  # Generic type variable
 
 class BenchPlotSrvCfg(param.Parameterized):
     """Configuration for the benchmarking plot server.
 
     This class defines parameters for controlling how the benchmark visualization
     server operates, including network configuration.
+    
+    Attributes:
+        port (int): The port to launch panel with
+        allow_ws_origin (bool): Add the port to the whitelist (warning will disable remote 
+                               access if set to true)
+        show (bool): Open the served page in a web browser
     """
 
-    port: int = param.Integer(None, doc="The port to launch panel with")
-    allow_ws_origin = param.Boolean(
+    port: Optional[int] = param.Integer(None, doc="The port to launch panel with")
+    allow_ws_origin: bool = param.Boolean(
         False,
         doc="Add the port to the whitelist, (warning will disable remote access if set to true)",
     )
@@ -38,6 +45,45 @@ class BenchRunCfg(BenchPlotSrvCfg):
     including caching behavior, reporting options, visualization settings, and execution strategy.
     It defines numerous parameters that control how benchmark runs are performed, cached,
     and displayed to the user.
+    
+    Attributes:
+        repeats (int): The number of times to sample the inputs
+        over_time (bool): If true each time the function is called it will plot a 
+                         timeseries of historical and the latest result
+        use_optuna (bool): Show optuna plots
+        summarise_constant_inputs (bool): Print the inputs that are kept constant 
+                                         when describing the sweep parameters
+        print_bench_inputs (bool): Print the inputs to the benchmark function 
+                                  every time it is called
+        print_bench_results (bool): Print the results of the benchmark function 
+                                   every time it is called
+        clear_history (bool): Clear historical results
+        print_pandas (bool): Print a pandas summary of the results to the console
+        print_xarray (bool): Print an xarray summary of the results to the console
+        serve_pandas (bool): Serve a pandas summary on the results webpage
+        serve_pandas_flat (bool): Serve a flattened pandas summary on the results webpage
+        serve_xarray (bool): Serve an xarray summary on the results webpage
+        auto_plot (bool): Automatically deduce the best type of plot for the results
+        raise_duplicate_exception (bool): Used to debug unique plot names
+        cache_results (bool): Benchmark level cache for completed benchmark results
+        clear_cache (bool): Clear the cache of saved input->output mappings
+        cache_samples (bool): Enable per-sample caching
+        only_hash_tag (bool): Use only the tag hash for cache identification
+        clear_sample_cache (bool): Clear the per-sample cache
+        overwrite_sample_cache (bool): Recalculate and overwrite cached sample values
+        only_plot (bool): Do not calculate benchmarks if no results are found in cache
+        use_holoview (bool): Use holoview for plotting
+        nightly (bool): Run a more extensive set of tests for a nightly benchmark
+        time_event (str): String representation of a sequence over time
+        headless (bool): Run the benchmarks headlessly
+        render_plotly (bool): Controls plotly rendering behavior with bokeh
+        level (int): Method of defining the number of samples to sweep over
+        run_tag (str): Tag for isolating cached results
+        run_date (datetime): Date the benchmark run was performed
+        executor (Executors): Executor for running the benchmark
+        plot_size (int): Sets both width and height of the plot
+        plot_width (int): Sets width of the plots
+        plot_height (int): Sets height of the plot
     """
 
     repeats: int = param.Integer(1, doc="The number of times to sample the inputs")
@@ -49,7 +95,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
-    summarise_constant_inputs = param.Boolean(
+    summarise_constant_inputs: bool = param.Boolean(
         True, doc="Print the inputs that are kept constant when describing the sweep parameters"
     )
 
@@ -131,30 +177,30 @@ class BenchRunCfg(BenchPlotSrvCfg):
         False, doc="Run a more extensive set of tests for a nightly benchmark"
     )
 
-    time_event: str = param.String(
+    time_event: Optional[str] = param.String(
         None,
         doc="A string representation of a sequence over time, i.e. datetime, pull request number, or run number",
     )
 
     headless: bool = param.Boolean(False, doc="Run the benchmarks headlessly")
 
-    render_plotly = param.Boolean(
+    render_plotly: bool = param.Boolean(
         True,
         doc="Plotly and Bokeh don't play nicely together, so by default pre-render plotly figures to a non dynamic version so that bokeh plots correctly.  If you want interactive 3D graphs, set this to true but be aware that your 2D interactive graphs will probably stop working.",
     )
 
-    level = param.Integer(
+    level: int = param.Integer(
         default=0,
         bounds=[0, 12],
         doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specify the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
     )
 
-    run_tag = param.String(
+    run_tag: str = param.String(
         default="",
         doc="Define a tag for a run to isolate the results stored in the cache from other runs",
     )
 
-    run_date = param.Date(
+    run_date: datetime = param.Date(
         default=datetime.now(),
         doc="The date the bench run was performed",
     )
@@ -169,21 +215,23 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="The function can be run serially or in parallel with different futures executors",
     )
 
-    plot_size = param.Integer(default=None, doc="Sets the width and height of the plot")
-    plot_width = param.Integer(
+    plot_size: Optional[int] = param.Integer(default=None, doc="Sets the width and height of the plot")
+    plot_width: Optional[int] = param.Integer(
         default=None,
         doc="Sets with width of the plots, this will override the plot_size parameter",
     )
-    plot_height = param.Integer(
+    plot_height: Optional[int] = param.Integer(
         default=None, doc="Sets the height of the plot, this will override the plot_size parameter"
     )
 
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
-        """create a BenchRunCfg by parsing command line arguments
-
+        """Create a BenchRunCfg by parsing command line arguments.
+        
+        Parses command line arguments to create a configuration for benchmark runs.
+        
         Returns:
-            parsed args: parsed args
+            BenchRunCfg: Configuration object with settings from command line arguments
         """
 
         parser = argparse.ArgumentParser(description="benchmark")
@@ -240,6 +288,28 @@ class BenchCfg(BenchRunCfg):
     The class handles input variables, result variables, constant values, meta variables,
     and various presentation options. It also provides methods for generating
     descriptive summaries and visualizations of the benchmark configuration.
+    
+    Attributes:
+        input_vars (List): A list of ParameterizedSweep variables to perform a parameter sweep over
+        result_vars (List): A list of ParameterizedSweep results to collect and plot
+        const_vars (List): Variables to keep constant but are different from the default value
+        result_hmaps (List): A list of holomap results
+        meta_vars (List): Meta variables such as recording time and repeat id
+        all_vars (List): Stores a list of both the input_vars and meta_vars
+        iv_time (List[TimeSnapshot | TimeEvent]): Parameter for sampling the same inputs over time
+        iv_time_event (List[TimeEvent]): Parameter for sampling inputs over time as a discrete type
+        over_time (bool): Controls whether the function is sampled over time
+        name (str): The name of the benchmarkCfg
+        title (str): The title of the benchmark
+        raise_duplicate_exception (bool): Used for debugging filename generation uniqueness
+        bench_name (str): The name of the benchmark and save folder
+        description (str): A longer description of the benchmark function
+        post_description (str): Comments on the output of the graphs
+        has_results (bool): Whether this config has results
+        pass_repeat (bool): Whether to pass the 'repeat' kwarg to the benchmark function
+        tag (str): Tags for grouping different benchmarks
+        hash_value (str): Stored hash value of the config
+        plot_callbacks (List): Callables that take a BenchResult and return panel representation
     """
 
     input_vars = param.List(
@@ -268,7 +338,7 @@ class BenchCfg(BenchRunCfg):
     )
     iv_time = param.List(
         default=[],
-        item_type=TimeSnapshot | TimeEvent,
+        item_type=Union[TimeSnapshot, TimeEvent],
         doc="A parameter to represent the sampling the same inputs over time as a scalar type",
     )
 
@@ -278,22 +348,22 @@ class BenchCfg(BenchRunCfg):
         doc="A parameter to represent the sampling the same inputs over time as a discrete type",
     )
 
-    over_time: param.Boolean(
+    over_time: bool = param.Boolean(
         False, doc="A parameter to control whether the function is sampled over time"
     )
-    name: str = param.String(None, doc="The name of the benchmarkCfg")
-    title: str = param.String(None, doc="The title of the benchmark")
-    raise_duplicate_exception: str = param.Boolean(
+    name: Optional[str] = param.String(None, doc="The name of the benchmarkCfg")
+    title: Optional[str] = param.String(None, doc="The title of the benchmark")
+    raise_duplicate_exception: bool = param.Boolean(
         False, doc="Use this while debugging if filename generation is unique"
     )
-    bench_name: str = param.String(
+    bench_name: Optional[str] = param.String(
         None, doc="The name of the benchmark and the name of the save folder"
     )
-    description: str = param.String(
+    description: Optional[str] = param.String(
         None,
         doc="A place to store a longer description of the function of the benchmark",
     )
-    post_description: str = param.String(None, doc="A place to comment on the output of the graphs")
+    post_description: Optional[str] = param.String(None, doc="A place to comment on the output of the graphs")
 
     has_results: bool = param.Boolean(
         False,
@@ -320,17 +390,31 @@ class BenchCfg(BenchRunCfg):
         doc="A callable that takes a BenchResult and returns panel representation of the results",
     )
 
-    def __init__(self, **params):
+    def __init__(self, **params: Any) -> None:
+        """Initialize a BenchCfg with the given parameters.
+        
+        Args:
+            **params (Any): Parameters to set on the BenchCfg
+        """
         super().__init__(**params)
         self.plot_lib = None
         self.hmap_kdims = None
         self.iv_repeat = None
 
-    def hash_persistent(self, include_repeats) -> str:
-        """override the default hash function because the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
+    def hash_persistent(self, include_repeats: bool) -> str:
+        """Generate a persistent hash for the benchmark configuration.
+        
+        Overrides the default hash function because the default hash function does not 
+        return the same value for the same inputs. This method references only stable
+        variables that are consistent across instances of BenchCfg with the same
+        configuration.
 
         Args:
-            include_repeats (bool) : by default include repeats as part of the hash except with using the sample cache
+            include_repeats (bool): Whether to include repeats as part of the hash
+                                   (True by default except when using the sample cache)
+            
+        Returns:
+            str: A persistent hash value for the benchmark configuration
         """
 
         if include_repeats:
@@ -358,13 +442,31 @@ class BenchCfg(BenchRunCfg):
         return hash_val
 
     def inputs_as_str(self) -> List[str]:
+        """Get a list of input variable names.
+        
+        Returns:
+            List[str]: List of the names of input variables
+        """
         return [i.name for i in self.input_vars]
 
-    def to_latex(self):
+    def to_latex(self) -> Optional[pn.pane.LaTeX]:
+        """Convert benchmark configuration to LaTeX representation.
+        
+        Returns:
+            Optional[pn.pane.LaTeX]: LaTeX representation of the benchmark configuration
+        """
         return to_latex(self)
 
-    def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown | pn.Column:
-        """Produce a markdown summary of the sweep settings"""
+    def describe_sweep(self, width: int = 800, accordion: bool = True) -> Union[pn.pane.Markdown, pn.Column]:
+        """Produce a markdown summary of the sweep settings.
+        
+        Args:
+            width (int): Width of the markdown panel in pixels. Defaults to 800.
+            accordion (bool): Whether to wrap the description in an accordion. Defaults to True.
+            
+        Returns:
+            Union[pn.pane.Markdown, pn.Column]: Panel containing the sweep description
+        """
 
         latex = self.to_latex()
         desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
@@ -374,9 +476,14 @@ class BenchCfg(BenchRunCfg):
         sentence = self.sweep_sentence()
         if latex is not None:
             return pn.Column(sentence, latex, desc)
-        return pn.Column(sentence, latex, desc)
+        return pn.Column(sentence, desc)
 
-    def sweep_sentence(self):
+    def sweep_sentence(self) -> pn.pane.Markdown:
+        """Generate a concise summary sentence of the sweep configuration.
+        
+        Returns:
+            pn.pane.Markdown: A panel containing a markdown summary sentence
+        """
         inputs = " by ".join([iv.name for iv in self.all_vars])
 
         all_vars_lens = [len(iv.values()) for iv in reversed(self.all_vars)]
@@ -385,13 +492,13 @@ class BenchCfg(BenchRunCfg):
         result_sizes = "x".join([str(iv) for iv in all_vars_lens])
         results = ", ".join([rv.name for rv in self.result_vars])
 
-        return f"Sweeping {inputs} to generate a {result_sizes} result dataframe containing {results}. "
+        return pn.pane.Markdown(f"Sweeping {inputs} to generate a {result_sizes} result dataframe containing {results}. ")
 
     def describe_benchmark(self) -> str:
-        """Generate a string summary of the inputs and results from a BenchCfg
+        """Generate a detailed string summary of the inputs and results from a BenchCfg.
 
         Returns:
-            str: summary of BenchCfg
+            str: Comprehensive summary of BenchCfg
         """
         benchmark_sampling_str = ["```text"]
         benchmark_sampling_str.append("")
@@ -428,26 +535,62 @@ class BenchCfg(BenchRunCfg):
         benchmark_sampling_str = "\n".join(benchmark_sampling_str)
         return benchmark_sampling_str
 
-    def to_title(self, panel_name: str = None) -> pn.pane.Markdown:
+    def to_title(self, panel_name: Optional[str] = None) -> pn.pane.Markdown:
+        """Create a markdown panel with the benchmark title.
+        
+        Args:
+            panel_name (Optional[str]): The name for the panel. Defaults to the benchmark title.
+            
+        Returns:
+            pn.pane.Markdown: A panel with the benchmark title as a heading
+        """
         if panel_name is None:
             panel_name = self.title
         return pn.pane.Markdown(f"# {self.title}", name=panel_name)
 
     def to_description(self, width: int = 800) -> pn.pane.Markdown:
+        """Create a markdown panel with the benchmark description.
+        
+        Args:
+            width (int): Width of the markdown panel in pixels. Defaults to 800.
+            
+        Returns:
+            pn.pane.Markdown: A panel with the benchmark description
+        """
         return pn.pane.Markdown(f"{self.description}", width=width)
 
     def to_post_description(self, width: int = 800) -> pn.pane.Markdown:
+        """Create a markdown panel with the benchmark post-description.
+        
+        Args:
+            width (int): Width of the markdown panel in pixels. Defaults to 800.
+            
+        Returns:
+            pn.pane.Markdown: A panel with the benchmark post-description
+        """
         return pn.pane.Markdown(f"{self.post_description}", width=width)
 
     def to_sweep_summary(
         self,
-        name=None,
-        description=True,
-        describe_sweep=True,
-        results_suffix=True,
+        name: Optional[str] = None,
+        description: bool = True,
+        describe_sweep: bool = True,
+        results_suffix: bool = True,
         title: bool = True,
-    ) -> pn.pane.Markdown:
-        """Produce panel output summarising the title, description and sweep setting"""
+    ) -> pn.Column:
+        """Produce panel output summarising the title, description and sweep setting.
+        
+        Args:
+            name (Optional[str]): Name for the panel. Defaults to benchmark title or 
+                                 "Data Collection Parameters" if title is False.
+            description (bool): Whether to include the benchmark description. Defaults to True.
+            describe_sweep (bool): Whether to include the sweep description. Defaults to True.
+            results_suffix (bool): Whether to add a "Results:" heading. Defaults to True.
+            title (bool): Whether to include the benchmark title. Defaults to True.
+            
+        Returns:
+            pn.Column: A panel with the benchmark summary
+        """
         if name is None:
             if title:
                 name = self.title
@@ -464,7 +607,16 @@ class BenchCfg(BenchRunCfg):
             col.append(pn.pane.Markdown("## Results:"))
         return col
 
-    def optuna_targets(self, as_var=False) -> List[str]:
+    def optuna_targets(self, as_var: bool = False) -> List[Any]:
+        """Get the list of result variables that are optimization targets.
+        
+        Args:
+            as_var (bool): If True, return the variable objects rather than their names.
+                          Defaults to False.
+            
+        Returns:
+            List[Any]: List of result variable names or objects that are optimization targets
+        """
         targets = []
         for rv in self.result_vars:
             if hasattr(rv, "direction") and rv.direction != OptDir.none:
@@ -481,6 +633,14 @@ class DimsCfg:
     This class processes a BenchCfg object to extract and organize information about
     the dimensions of the benchmark, including names, ranges, sizes, and coordinates.
     It is used to set up the structure for analyzing and visualizing benchmark results.
+    
+    Attributes:
+        dims_name (List[str]): Names of the benchmark dimensions
+        dim_ranges (List[List[Any]]): Values for each dimension
+        dims_size (List[int]): Size (number of values) for each dimension
+        dim_ranges_index (List[List[int]]): Indices for each dimension value
+        dim_ranges_str (List[str]): String representation of dimension ranges
+        coords (Dict[str, List[Any]]): Mapping of dimension names to their values
     """
 
     def __init__(self, bench_cfg: BenchCfg) -> None:
@@ -492,14 +652,14 @@ class DimsCfg:
         Args:
             bench_cfg (BenchCfg): The benchmark configuration containing dimension information
         """
-        self.dims_name = [i.name for i in bench_cfg.all_vars]
+        self.dims_name: List[str] = [i.name for i in bench_cfg.all_vars]
 
-        self.dim_ranges = []
+        self.dim_ranges: List[List[Any]] = []
         self.dim_ranges = [i.values() for i in bench_cfg.all_vars]
-        self.dims_size = [len(p) for p in self.dim_ranges]
-        self.dim_ranges_index = [list(range(i)) for i in self.dims_size]
-        self.dim_ranges_str = [f"{s}\n" for s in self.dim_ranges]
-        self.coords = dict(zip(self.dims_name, self.dim_ranges))
+        self.dims_size: List[int] = [len(p) for p in self.dim_ranges]
+        self.dim_ranges_index: List[List[int]] = [list(range(i)) for i in self.dims_size]
+        self.dim_ranges_str: List[str] = [f"{s}\n" for s in self.dim_ranges]
+        self.coords: Dict[str, List[Any]] = dict(zip(self.dims_name, self.dim_ranges))
 
         logging.debug(f"dims_name: {self.dims_name}")
         logging.debug(f"dim_ranges {self.dim_ranges_str}")
