@@ -370,7 +370,7 @@ class BenchResultBase(OptunaResult):
         pane_collection: pn.pane = None,
         override=False,
         **kwargs,
-    ):
+    ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
             float_range=float_range,
             cat_range=cat_range,
