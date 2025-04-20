@@ -7,8 +7,12 @@ from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_results.holoview_result import HoloviewResult
-from bencher.results.holoview_results.box_whisker_result import BoxWhiskerResult
+
+# Updated imports for distribution result classes
+from bencher.results.holoview_results.distribution_result import BoxWhiskerResult
+from bencher.results.holoview_results.distribution_result import ViolinResult
 from bencher.results.holoview_results.scatter_result import ScatterResult
+from bencher.results.holoview_results.distribution_result import ScatterJitterResult
 from bencher.results.holoview_results.bar_result import BarResult
 from bencher.results.holoview_results.line_result import LineResult
 from bencher.results.holoview_results.curve_result import CurveResult
@@ -22,6 +26,8 @@ from bencher.utils import listify
 class BenchResult(
     PlotlyResult,
     BoxWhiskerResult,
+    ViolinResult,
+    ScatterJitterResult,
     ScatterResult,
     LineResult,
     BarResult,
@@ -59,7 +65,8 @@ class BenchResult(
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
             BarResult.to_bar,
             BoxWhiskerResult.to_boxplot,
-            # ScatterResult.to_scatter_jitter,  # needs to be fixed
+            # ViolinResult.to_violin,
+            # ScatterJitterResult.to_scatter_jitter,
             CurveResult.to_curve,
             LineResult.to_line,
             HeatmapResult.to_heatmap,
