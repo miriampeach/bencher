@@ -1,4 +1,6 @@
-read through the codebase and improve the docstrings and type hints. 
+Fix the box and whisker code.  Implement box and whisker using holoviews and also hvplot.  The code needs to be able to accept arbitrary dataframes (that pass the requirements filter). 
 
 Workflow:
-    Run and continue to debug the output of the task `pixi r agent-iterate` until it passes.
+    Run the task `pixi r agent-iterate` and continue to debug the output of the task until it passes.
+
+Do not ask for clarification.  Keep workingthe task `pixi r agent-iterate` and implementing the feature until the `agent-iterate` task completes fully
