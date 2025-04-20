@@ -45,13 +45,14 @@ class BoxWhiskerResult(HoloviewResult):
             Optional[pn.panel]: A panel containing the box plot if data is appropriate,
                               otherwise returns filter match results.
         """
+
         return self.filter(
             self.to_boxplot_ds,
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(2, None),
             reduce=ReduceType.NONE,
-            target_dimension=2,
+            target_dimension=self.plt_cnt_cfg.cat_cnt + 1,  # +1 cos we have a repeats dimension
             result_var=result_var,
             result_types=(ResultVar),
             override=override,
@@ -78,12 +79,16 @@ class BoxWhiskerResult(HoloviewResult):
         # Create plot title
         title = self.title_from_ds(dataset[var_name], result_var, **kwargs)
 
+        df = dataset[var_name].to_dataframe().reset_index()
+        kdims = params_to_str(self.plt_cnt_cfg.cat_vars)
+
         return hv.BoxWhisker(
-            dataset[var_name].to_dataframe().reset_index(),
-            kdims=params_to_str(self.plt_cnt_cfg.cat_vars),
+            df,
+            kdims=kdims,
             vdims=[var_name],
         ).opts(
             title=title,
             ylabel=f"{var_name} [{result_var.units}]",
+            xrotation=30,  # Rotate x-axis labels by 30 degrees
             **kwargs,
         )
