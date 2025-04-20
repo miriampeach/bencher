@@ -66,7 +66,7 @@ if __name__ == "__main__":
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_1D/example_3_cat_in_2_out.py", "1D"
+        "/workspaces/bencher/bencher/example/inputs_1D/example_3_cat_in_2_out.py", "3D"
     )
 
     convert_example_to_jupyter_notebook(
