@@ -26,7 +26,16 @@ use_tap = True
 
 class HoloviewResult(PanelResult):
     @staticmethod
-    def set_default_opts(width=600, height=600):
+    def set_default_opts(width: int = 600, height: int = 600) -> dict:
+        """Set default options for HoloViews visualizations.
+
+        Args:
+            width (int, optional): Default width for visualizations. Defaults to 600.
+            height (int, optional): Default height for visualizations. Defaults to 600.
+
+        Returns:
+            dict: Dictionary containing width, height, and tools settings.
+        """
         width_height = {"width": width, "height": height, "tools": ["hover"]}
         hv.opts.defaults(
             hv.opts.Curve(**width_height),
@@ -41,10 +50,28 @@ class HoloviewResult(PanelResult):
         )
         return width_height
 
-    def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
+    def to(self, hv_type: type, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
+        """Convert the dataset to a specific HoloViews visualization type.
+
+        Args:
+            hv_type (type): The HoloViews chart type to convert to (e.g., hv.Points, hv.Curve).
+            reduce (ReduceType, optional): How to reduce dataset dimensions. Defaults to ReduceType.AUTO.
+            **kwargs: Additional parameters to pass to the chart constructor.
+
+        Returns:
+            hv.Chart: A HoloViews chart of the specified type.
+        """
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
-    def overlay_plots(self, plot_callback: callable) -> Optional[hv.Overlay]:
+    def overlay_plots(self, plot_callback: callable) -> Optional[hv.Overlay | pn.Row]:
+        """Create an overlay of plots by applying a callback to each result variable.
+
+        Args:
+            plot_callback (callable): Function to apply to each result variable to create a plot.
+
+        Returns:
+            Optional[hv.Overlay | pn.Row]: An overlay of plots or Row of plots, or None if no results.
+        """
         results = []
         markdown_results = pn.Row()
         for rv in self.bench_cfg.result_vars:
@@ -63,7 +90,15 @@ class HoloviewResult(PanelResult):
             return markdown_results
         return None
 
-    def layout_plots(self, plot_callback: callable):
+    def layout_plots(self, plot_callback: callable) -> Optional[hv.Layout]:
+        """Create a layout of plots by applying a callback to each result variable.
+
+        Args:
+            plot_callback (callable): Function to apply to each result variable to create a plot.
+
+        Returns:
+            Optional[hv.Layout]: A layout of plots or None if no results.
+        """
         if len(self.bench_cfg.result_vars) > 0:
             pt = hv.Layout()
             got_results = False
@@ -75,7 +110,15 @@ class HoloviewResult(PanelResult):
             return pt if got_results else None
         return plot_callback(self.bench_cfg.result_vars[0])
 
-    def time_widget(self, title):
+    def time_widget(self, title: str) -> dict:
+        """Create widget configuration for time-based visualizations.
+
+        Args:
+            title (str): Title for the widget.
+
+        Returns:
+            dict: Widget configuration dictionary.
+        """
         return {"title": title}
         # if self.bench_cfg.over_time:
         #     time_widget_args = {"widget_type": "scrubber", "widget_location": "bottom"}
@@ -87,23 +130,43 @@ class HoloviewResult(PanelResult):
         # return time_widget_args
 
     def hv_container_ds(
-        self,
-        dataset: xr.Dataset,
-        result_var: Parameter,
-        container: hv.Chart = None,
-        **kwargs,
-    ):
+        self, dataset: xr.Dataset, result_var: Parameter, container: hv.Chart = None, **kwargs
+    ) -> hv.Chart:
+        """Convert an xarray Dataset to a HoloViews container for a specific result variable.
+
+        Args:
+            dataset (xr.Dataset): The xarray Dataset containing the data.
+            result_var (Parameter): The result variable to visualize.
+            container (hv.Chart, optional): The HoloViews container type to use. Defaults to None.
+            **kwargs: Additional options to pass to the chart's opts() method.
+
+        Returns:
+            hv.Chart: A HoloViews chart containing the visualization.
+        """
         return hv.Dataset(dataset[result_var.name]).to(container).opts(**kwargs)
 
     def to_hv_container(
         self,
         container: pn.pane.panel,
-        reduce_type=ReduceType.AUTO,
+        reduce_type: ReduceType = ReduceType.AUTO,
         target_dimension: int = 2,
         result_var: Parameter = None,
-        result_types=(ResultVar),
+        result_types: tuple = (ResultVar),
         **kwargs,
     ) -> Optional[pn.pane.panel]:
+        """Convert the data to a HoloViews container with specified dimensions and options.
+
+        Args:
+            container (pn.pane.panel): The panel container type to use.
+            reduce_type (ReduceType, optional): How to reduce the dataset dimensions. Defaults to ReduceType.AUTO.
+            target_dimension (int, optional): Target dimension for the visualization. Defaults to 2.
+            result_var (Parameter, optional): Specific result variable to visualize. Defaults to None.
+            result_types (tuple, optional): Types of result variables to include. Defaults to (ResultVar).
+            **kwargs: Additional visualization options.
+
+        Returns:
+            Optional[pn.pane.panel]: A panel containing the visualization, or None if no valid results.
+        """
         return self.map_plot_panes(
             partial(self.hv_container_ds, container=container),
             hv_dataset=self.to_hv_dataset(reduce_type),
@@ -113,12 +176,37 @@ class HoloviewResult(PanelResult):
             **kwargs,
         )
 
-    def result_var_to_container(self, result_var):
+    def result_var_to_container(self, result_var: Parameter) -> type:
+        """Determine the appropriate container type for a given result variable.
+
+        Args:
+            result_var (Parameter): The result variable to find a container for.
+
+        Returns:
+            type: The appropriate panel container type (PNG, Video, or Column).
+        """
         if isinstance(result_var, ResultImage):
             return pn.pane.PNG
         return pn.pane.Video if isinstance(result_var, ResultVideo) else pn.Column
 
-    def setup_results_and_containers(self, result_var_plots, container, **kwargs):
+    def setup_results_and_containers(
+        self,
+        result_var_plots: Parameter | List[Parameter],
+        container: type | List[type] = None,
+        **kwargs,
+    ) -> tuple[List[Parameter], List[pn.pane.panel]]:
+        """Set up appropriate containers for result variables.
+
+        Args:
+            result_var_plots (Parameter | List[Parameter]): Result variables to visualize.
+            container (type | List[type], optional): Container types to use. Defaults to None.
+            **kwargs: Additional options to pass to the container constructors.
+
+        Returns:
+            tuple[List[Parameter], List[pn.pane.panel]]: Tuple containing:
+                - List of result variables
+                - List of initialized container instances
+        """
         result_var_plots = listify(result_var_plots)
         if container is None:
             containers = [self.result_var_to_container(rv) for rv in result_var_plots]
@@ -129,11 +217,28 @@ class HoloviewResult(PanelResult):
         return result_var_plots, cont_instances
 
     def to_error_bar(self, result_var: Parameter | str = None, **kwargs) -> hv.Bars:
+        """Convert the dataset to an ErrorBars visualization for a specific result variable.
+
+        Args:
+            result_var (Parameter | str, optional): Result variable to visualize. Defaults to None.
+            **kwargs: Additional options for dataset reduction.
+
+        Returns:
+            hv.Bars: A HoloViews ErrorBars object showing error ranges.
+        """
         return self.to_hv_dataset(ReduceType.REDUCE, result_var=result_var, **kwargs).to(
             hv.ErrorBars
         )
 
     def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
+        """Convert the dataset to a Points visualization with optional error bars.
+
+        Args:
+            reduce (ReduceType, optional): How to reduce the dataset dimensions. Defaults to ReduceType.AUTO.
+
+        Returns:
+            hv.Points: A HoloViews Points object, potentially with ErrorBars if reduction is applied.
+        """
         ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
@@ -141,14 +246,39 @@ class HoloviewResult(PanelResult):
         return pt
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
+        """Convert a HoloMap to an NdLayout for multi-dimensional visualization.
+
+        Args:
+            hmap_name (str): Name of the HoloMap to convert.
+
+        Returns:
+            hv.NdLayout: A HoloViews NdLayout object with the visualization.
+        """
         return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.bench_cfg.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
 
     def to_holomap(self, name: str = None) -> hv.HoloMap:
+        """Convert an NdLayout to a HoloMap for animated/interactive visualization.
+
+        Args:
+            name (str, optional): Name of the HoloMap to use. Defaults to None.
+
+        Returns:
+            hv.HoloMap: A HoloViews HoloMap object with the visualization.
+        """
         return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
 
-    def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
+    def to_holomap_list(self, hmap_names: List[str] = None) -> pn.Column:
+        """Create a column of HoloMaps from multiple named maps.
+
+        Args:
+            hmap_names (List[str], optional): List of HoloMap names to include.
+                If None, uses all result_hmaps. Defaults to None.
+
+        Returns:
+            pn.Column: A panel Column containing multiple HoloMaps.
+        """
         if hmap_names is None:
             hmap_names = [i.name for i in self.result_hmaps]
         col = pn.Column()
@@ -156,14 +286,34 @@ class HoloviewResult(PanelResult):
             self.to_holomap(name)
         return col
 
-    def get_nearest_holomap(self, name: str = None, **kwargs):
+    def get_nearest_holomap(self, name: str = None, **kwargs) -> hv.HoloMap:
+        """Get the HoloMap element closest to the specified coordinates.
+
+        Args:
+            name (str, optional): Name of the HoloMap to use. Defaults to None.
+            **kwargs: Coordinate values to find nearest match for.
+
+        Returns:
+            hv.HoloMap: The nearest matching HoloMap element.
+        """
         canonical_inp = hmap_canonical_input(
             get_nearest_coords(self.ds, collapse_list=True, **kwargs)
         )
         return self.get_hmap(name)[canonical_inp].opts(framewise=True)
 
     def to_dynamic_map(self, name: str = None) -> hv.DynamicMap:
-        """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
+        """Create a DynamicMap from the HoloMap dictionary.
+
+        Uses the values stored in the holomap dictionary to populate a dynamic map.
+        This is much faster than passing the holomap to a holomap object as the
+        values are calculated on the fly.
+
+        Args:
+            name (str, optional): Name of the HoloMap to use. Defaults to None.
+
+        Returns:
+            hv.DynamicMap: A HoloViews DynamicMap for interactive visualization.
+        """
 
         def cb(**kwargs):
             return self.get_hmap(name)[hmap_canonical_input(kwargs)].opts(
@@ -176,19 +326,41 @@ class HoloviewResult(PanelResult):
 
         return hv.DynamicMap(cb, kdims=kdims)
 
-    def to_grid(self, inputs=None):
+    def to_grid(self, inputs: List[str] = None) -> hv.GridSpace:
+        """Create a grid visualization from a HoloMap.
+
+        Args:
+            inputs (List[str], optional): Input variable names to use for the grid dimensions.
+                If None, uses bench_cfg.inputs_as_str(). Defaults to None.
+
+        Returns:
+            hv.GridSpace: A HoloViews GridSpace object showing the data as a grid.
+        """
         if inputs is None:
             inputs = self.bench_cfg.inputs_as_str()
         if len(inputs) > 2:
             inputs = inputs[:2]
         return self.to_holomap().grid(inputs)
 
-    def to_table(self):
+    def to_table(self) -> hv.Table:
+        """Convert the dataset to a Table visualization.
+
+        Returns:
+            hv.Table: A HoloViews Table object.
+        """
         return self.to(hv.Table, ReduceType.SQUEEZE)
 
-    def to_tabulator(self, **kwargs):
-        """Passes the data to the panel Tabulator type to display an interactive table
-        see https://panel.holoviz.org/reference/widgets/Tabulator.html for extra options
+    def to_tabulator(self, **kwargs) -> pn.widgets.Tabulator:
+        """Create an interactive table visualization of the data.
+
+        Passes the data to the panel Tabulator type to display an interactive table.
+        See https://panel.holoviz.org/reference/widgets/Tabulator.html for extra options.
+
+        Args:
+            **kwargs: Additional parameters to pass to the Tabulator constructor.
+
+        Returns:
+            pn.widgets.Tabulator: An interactive table widget.
         """
         return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
 
