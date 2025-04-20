@@ -137,7 +137,6 @@ class PlotMatchesResult:
         match_info.insert(0, f"plot {plot_name} matches: {self.overall}")
         self.matches_info: str = "\n".join(match_info).strip()
         self.plt_cnt_cfg: PltCntCfg = plt_cnt_cfg
-        self.overall: bool  # Whether the plot filter matches overall
 
         # if self.plt_cnt_cfg.print_debug:
         logging.info(self.matches_info)
