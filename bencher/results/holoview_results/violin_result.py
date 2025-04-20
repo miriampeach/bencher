@@ -7,16 +7,11 @@ import xarray as xr
 
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import hvplot.pandas  # noqa pylint: disable=duplicate-code,unused-import
-from bencher.results.bench_result_base import ReduceType
 
-from bencher.plotting.plot_filter import VarRange
-from bencher.variables.results import ResultVar
-
-from bencher.results.holoview_results.holoview_result import HoloviewResult
-from bencher.utils import params_to_str
+from bencher.results.holoview_results.distribution_result import DistributionResult
 
 
-class ViolinResult(HoloviewResult):
+class ViolinResult(DistributionResult):
     """A class for creating violin plots from benchmark results.
 
     Violin plots combine aspects of box plots with kernel density plots, showing
@@ -42,15 +37,9 @@ class ViolinResult(HoloviewResult):
             Optional[pn.panel]: A panel containing the violin plot if data is appropriate,
                               otherwise returns filter match results.
         """
-        return self.filter(
+        return self.to_distribution_plot(
             self.to_violin_ds,
-            float_range=VarRange(0, 0),
-            cat_range=VarRange(0, None),
-            repeats_range=VarRange(2, None),
-            reduce=ReduceType.NONE,
-            target_dimension=2,
             result_var=result_var,
-            result_types=(ResultVar),
             override=override,
             **kwargs,
         )
@@ -69,17 +58,8 @@ class ViolinResult(HoloviewResult):
         Returns:
             hv.Violin: A HoloViews Violin plot of the benchmark data.
         """
-        # Get the name of the result variable (which is the data we want to plot)
-        var_name = result_var.name
-
-        # Create plot title
-        title = self.title_from_ds(dataset[var_name], result_var, **kwargs)
-
-        # Convert dataset to dataframe for HoloViews
-        df = dataset[var_name].to_dataframe().reset_index()
-
-        # Get kdims from categorical variables
-        kdims = params_to_str(self.plt_cnt_cfg.cat_vars)
+        # Prepare the data using the common method from the parent class
+        var_name, title, df, kdims = self.prepare_distribution_data(dataset, result_var, **kwargs)
 
         # Create the violin plot using HoloViews directly
         return hv.Violin(
