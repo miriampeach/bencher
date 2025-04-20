@@ -45,8 +45,8 @@ class BenchResult(
         return [
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
             BarResult.to_bar,
-            # BoxWhiskerResult.to_boxplot,
-            ScatterResult.to_scatter_jitter,  # needs to be fixed
+            BoxWhiskerResult.to_boxplot,
+            # ScatterResult.to_scatter_jitter,  # needs to be fixed
             CurveResult.to_curve,
             LineResult.to_line,
             HeatmapResult.to_heatmap,
