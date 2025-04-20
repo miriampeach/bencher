@@ -44,7 +44,18 @@ class VarRange:
 
         return lower_match and upper_match
 
-    def matches_info(self, val, name):
+    def matches_info(self, val: int, name: str) -> tuple[bool, str]:
+        """Get matching info for a value with a descriptive name.
+
+        Args:
+            val (int): A positive integer to check against the range
+            name (str): A descriptive name for the value being checked, used in the output string
+
+        Returns:
+            tuple[bool, str]: A tuple containing:
+                - bool: True if the value matches the range, False otherwise
+                - str: A formatted string describing the match result
+        """
         match = self.matches(val)
         info = f"{name}\t{self.lower_bound}>= {val} <={self.upper_bound} is {match}"
         return match, info
@@ -68,11 +79,19 @@ class PlotFilter:
     def matches_result(
         self, plt_cnt_cfg: PltCntCfg, plot_name: str, override: bool
     ) -> PlotMatchesResult:
-        """Checks if the result data signature matches the type of data the plot is able to display."""
+        """Checks if the result data signature matches the type of data the plot is able to display.
+
+        Args:
+            plt_cnt_cfg (PltCntCfg): Configuration containing counts of different plot elements
+            plot_name (str): Name of the plot being checked
+            override (bool): Whether to override filter matching rules
+
+        Returns:
+            PlotMatchesResult: Object containing match results and information
+        """
         return PlotMatchesResult(self, plt_cnt_cfg, plot_name, override)
 
 
-# @dataclass
 class PlotMatchesResult:
     """Stores information about which properties match the requirements of a particular plotter"""
 
@@ -82,11 +101,19 @@ class PlotMatchesResult:
         plt_cnt_cfg: PltCntCfg,
         plot_name: str,
         override: bool,
-    ):
-        match_info = []
-        matches = []
+    ) -> None:
+        """Initialize a PlotMatchesResult with filter matching information.
 
-        match_candidates = [
+        Args:
+            plot_filter (PlotFilter): The filter defining acceptable ranges for plot properties
+            plt_cnt_cfg (PltCntCfg): Configuration containing counts of different plot elements
+            plot_name (str): Name of the plot being checked
+            override (bool): Whether to override filter matching rules
+        """
+        match_info: list[str] = []
+        matches: list[bool] = []
+
+        match_candidates: list[tuple[VarRange, int, str]] = [
             (plot_filter.float_range, plt_cnt_cfg.float_cnt, "float"),
             (plot_filter.cat_range, plt_cnt_cfg.cat_cnt, "cat"),
             (plot_filter.vector_len, plt_cnt_cfg.vector_len, "vec"),
@@ -108,13 +135,22 @@ class PlotMatchesResult:
             self.overall = all(matches)
 
         match_info.insert(0, f"plot {plot_name} matches: {self.overall}")
-        self.matches_info = "\n".join(match_info).strip()
-        self.plt_cnt_cfg = plt_cnt_cfg
+        self.matches_info: str = "\n".join(match_info).strip()
+        self.plt_cnt_cfg: PltCntCfg = plt_cnt_cfg
 
         # if self.plt_cnt_cfg.print_debug:
         logging.info(self.matches_info)
 
     def to_panel(self, **kwargs) -> Optional[pn.pane.Markdown]:
+        """Convert match information to a Panel Markdown pane if debug mode is enabled.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the Panel Markdown constructor
+
+        Returns:
+            Optional[pn.pane.Markdown]: A Markdown pane containing match information if in debug mode,
+                                        None otherwise
+        """
         if self.plt_cnt_cfg.print_debug:
             return pn.pane.Markdown(self.matches_info, **kwargs)
         return None
