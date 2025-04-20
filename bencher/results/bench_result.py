@@ -10,6 +10,7 @@ from bencher.results.holoview_results.holoview_result import HoloviewResult
 from bencher.results.holoview_results.box_whisker_result import BoxWhiskerResult
 from bencher.results.holoview_results.violin_result import ViolinResult
 from bencher.results.holoview_results.scatter_result import ScatterResult
+from bencher.results.holoview_results.scatter_jitter_result import ScatterJitterResult
 from bencher.results.holoview_results.bar_result import BarResult
 from bencher.results.holoview_results.line_result import LineResult
 from bencher.results.holoview_results.curve_result import CurveResult
@@ -24,6 +25,7 @@ class BenchResult(
     PlotlyResult,
     BoxWhiskerResult,
     ViolinResult,
+    ScatterJitterResult,
     ScatterResult,
     LineResult,
     BarResult,
@@ -48,7 +50,8 @@ class BenchResult(
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
             BarResult.to_bar,
             # BoxWhiskerResult.to_boxplot,
-            ViolinResult.to_violin,
+            # ViolinResult.to_violin,
+            ScatterJitterResult.to_scatter_jitter,
             # ScatterResult.to_scatter_jitter,  # needs to be fixed
             CurveResult.to_curve,
             LineResult.to_line,

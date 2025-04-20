@@ -1,0 +1,79 @@
+from __future__ import annotations
+from typing import Optional
+import panel as pn
+import holoviews as hv
+from param import Parameter
+import xarray as xr
+import numpy as np
+
+from bencher.results.holoview_results.distribution_result import DistributionResult
+
+
+class ScatterJitterResult(DistributionResult):
+    """A class for creating scatter jitter plots from benchmark results.
+
+    Scatter jitter plots display individual data points with slight random offsets
+    to avoid overlapping, making it easier to visualize the distribution of data.
+    This is particularly useful for smaller datasets where showing individual points
+    provides more insight than aggregate statistics, or alongside box plots to show
+    the actual data distribution.
+    """
+
+    def to_scatter_jitter(
+        self, result_var: Parameter = None, override: bool = True, jitter: float = 0.1, **kwargs
+    ) -> Optional[pn.panel]:
+        """Generates a scatter jitter plot from benchmark data.
+
+        This method applies filters to ensure the data is appropriate for a scatter plot
+        and then passes the filtered data to to_scatter_jitter_ds for rendering.
+
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            jitter (float, optional): Amount of jitter to apply to points. Defaults to 0.1.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+
+        Returns:
+            Optional[pn.panel]: A panel containing the scatter jitter plot if data is appropriate,
+                              otherwise returns filter match results.
+        """
+        kwargs["jitter"] = jitter
+        return self.to_distribution_plot(
+            self.to_scatter_jitter_ds,
+            result_var=result_var,
+            override=override,
+            **kwargs,
+        )
+
+    def to_scatter_jitter_ds(
+        self, dataset: xr.Dataset, result_var: Parameter, jitter: float = 0.1, **kwargs
+    ) -> hv.Scatter:
+        """Creates a scatter jitter plot from the provided dataset.
+
+        Given a filtered dataset, this method generates a scatter visualization showing
+        individual data points with random jitter to avoid overlapping, making the
+        distribution of values more visible.
+
+        Args:
+            dataset (xr.Dataset): The dataset containing benchmark results.
+            result_var (Parameter): The result variable to plot.
+            jitter (float, optional): Amount of jitter to apply to points. Defaults to 0.1.
+            **kwargs: Additional keyword arguments passed to the scatter plot options.
+
+        Returns:
+            hv.Scatter: A HoloViews Scatter plot of the benchmark data with jittered points.
+        """
+        # Prepare the data using the common method from the parent class
+        var_name, title, df, kdims = self.prepare_distribution_data(dataset, result_var, **kwargs)
+
+        return hv.Scatter(
+            df,
+            kdims=kdims,
+            vdims=[var_name],
+        ).opts(
+            title=title,
+            ylabel=f"{var_name} [{result_var.units}]",
+            xrotation=30,  # Rotate x-axis labels by 30 degrees
+            jitter=jitter,
+            **kwargs,
+        )
