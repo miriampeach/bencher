@@ -43,18 +43,17 @@ from .results.composable_container.composable_container_video import (
     RenderCfg,
 )
 
-from .results.holoview_results.distribution_result.scatter_jitter_result import ScatterJitterResult
-from .results.holoview_results.distribution_result import BoxWhiskerResult
-from .results.holoview_results.distribution_result import ViolinResult
-from .results.holoview_results.scatter_result import ScatterResult
-from .results.holoview_results.distribution_result import ScatterJitterResult
-from .results.holoview_results.bar_result import BarResult
-from .results.holoview_results.line_result import LineResult
-from .results.holoview_results.curve_result import CurveResult
-from .results.holoview_results.heatmap_result import HeatmapResult
-from .results.holoview_results.surface_result import SurfaceResult
-from .results.hvplot_result import HvplotResult
-from .results.dataset_result import DataSetResult
+from bencher.results.holoview_results.distribution_result.box_whisker_result import BoxWhiskerResult
+from bencher.results.holoview_results.distribution_result.violin_result import ViolinResult
+from bencher.results.holoview_results.scatter_result import ScatterResult
+from bencher.results.holoview_results.distribution_result.scatter_jitter_result import ScatterJitterResult
+from bencher.results.holoview_results.bar_result import BarResult
+from bencher.results.holoview_results.line_result import LineResult
+from bencher.results.holoview_results.curve_result import CurveResult
+from bencher.results.holoview_results.heatmap_result import HeatmapResult
+from bencher.results.holoview_results.surface_result import SurfaceResult
+from bencher.results.hvplot_result import HvplotResult
+from bencher.results.dataset_result import DataSetResult
 
 from .utils import (
     hmap_canonical_input,
