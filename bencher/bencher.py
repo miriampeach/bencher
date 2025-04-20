@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product, combinations
 
+from param import Parameter
 from typing import Callable, List, Optional, Tuple, Any
 from copy import deepcopy
 import numpy as np
@@ -1182,3 +1183,33 @@ class Bench(BenchPlotServer):
                 return [i.name for i in self.worker_class_instance.get_results_only()]
             return self.worker_class_instance.get_results_only()
         raise RuntimeError("Worker class instance not set")
+
+    def to(
+        self,
+        result_type: BenchResult,
+        result_var: Optional[Parameter] = None,
+        override: bool = True,
+        **kwargs: Any,
+    ) -> BenchResult:
+        # return
+        """Return the current instance of BenchResult.
+
+        Returns:
+            BenchResult: The current instance of the benchmark result
+        """
+        result = self.get_result()
+        print(result_type)
+        result_instance = result_type(result.bench_cfg)
+        result_instance.ds = result.ds
+        result_instance.bench_cfg = result.bench_cfg
+        result_instance.plt_cnt_cfg = result.plt_cnt_cfg
+        return result_instance.to_plot(result_var=result_var, override=override, **kwargs)
+
+    def add(
+        self,
+        result_type: BenchResult,
+        result_var: Optional[Parameter] = None,
+        override: bool = True,
+        **kwargs: Any,
+    ):
+        self.report.append(self.to(result_type, result_var=result_var, override=override, **kwargs))

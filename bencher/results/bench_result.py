@@ -51,6 +51,15 @@ class BenchResult(
         HoloviewResult.__init__(self, bench_cfg)
         # DataSetResult.__init__(self.bench_cfg)
 
+    # def to_res(self, result_type: BenchResult) -> BenchResult:
+    #     # return
+    #     """Return the current instance of BenchResult.
+
+    #     Returns:
+    #         BenchResult: The current instance of the benchmark result
+    #     """
+    #     return result_type(self.bench_cfg).to_plot(self)
+
     @staticmethod
     def default_plot_callbacks() -> List[callable]:
         """Get the default list of plot callback functions.

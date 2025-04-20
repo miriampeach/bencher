@@ -26,6 +26,15 @@ class ScatterJitterResult(DistributionResult):
     - Complements statistical plots like box plots or violin plots
     """
 
+    def to_plot(
+        self,
+        result_var: Optional[Parameter] = None,
+        override: bool = True,
+        jitter: float = 0.1,
+        **kwargs: Any,
+    ) -> Optional[pn.panel]:
+        return self.to_scatter_jitter(result_var, override, jitter, **kwargs)
+
     def to_scatter_jitter(
         self,
         result_var: Optional[Parameter] = None,

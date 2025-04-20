@@ -90,13 +90,20 @@ class DistributionResult(HoloviewResult):
         # Convert dataset to dataframe for HoloViews
         df = dataset[var_name].to_dataframe().reset_index()
         kdims = params_to_str(self.plt_cnt_cfg.cat_vars)
-        return plot_class(
-            df,
-            kdims=kdims,
-            vdims=[var_name],
-        ).opts(
-            title=title,
-            ylabel=f"{var_name} [{result_var.units}]",
-            xrotation=30,  # Rotate x-axis labels by 30 degrees
-            **kwargs,
-        )
+
+        if not isinstance(plot_class, list):
+            plot_class = [plot_class]
+
+        overlay = hv.Overlay()
+        for plot in plot_class:
+            overlay *= plot(
+                df,
+                kdims=kdims,
+                vdims=[var_name],
+            ).opts(
+                title=title,
+                ylabel=f"{var_name} [{result_var.units}]",
+                xrotation=30,  # Rotate x-axis labels by 30 degrees
+                **kwargs,
+            )
+        return overlay
