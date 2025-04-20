@@ -15,6 +15,8 @@ from bencher.variables.results import ResultVar
 
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 
+from bokeh.sampledata.autompg import autompg as df
+
 
 class BoxWhiskerResult(HoloviewResult):
     """A class for creating box and whisker plots from benchmark results.
@@ -70,13 +72,46 @@ class BoxWhiskerResult(HoloviewResult):
         Returns:
             hv.BoxWhisker: A HoloViews BoxWhisker plot of the benchmark data.
         """
-        by = None
-        if self.plt_cnt_cfg.cat_cnt >= 2:
-            by = self.plt_cnt_cfg.cat_vars[1].name
-        da_plot = dataset[result_var.name]
-        title = self.title_from_ds(da_plot, result_var, **kwargs)
-        time_widget_args = self.time_widget(title)
-        # return da_plot.hvplot.box(by=by, **time_widget_args, **kwargs)
-        # return da_plot.hvplot.box( **time_widget_args, **kwargs)
-        print(kwargs)
-        return da_plot.hvplot.box(y=result_var.name, by=by, **time_widget_args, **kwargs)
+        # Get the name of the result variable (which is the data we want to plot)
+        var_name = result_var.name
+
+        # Create plot title
+        title = self.title_from_ds(dataset[var_name], result_var, **kwargs)
+
+        df = dataset[var_name].to_dataframe().reset_index()
+
+        # Create a box plot directly using the HoloViews interface
+        # We'll group by all dimensions except 'repeat'
+        data = []
+        cat_dims = []
+
+        # Find the categorical dimension names that we'll use for grouping
+        for dim in dataset[var_name].dims:
+            if dim != "repeat" and isinstance(
+                dataset[var_name].coords[dim].values[0], (str, bytes)
+            ):
+                cat_dims.append(dim)
+
+        # If we have categorical dimensions, create a box for each category
+        if cat_dims:
+            # Convert to dataframe format that HoloViews expects
+            df = dataset[var_name].to_dataframe().reset_index()
+            # Only keep the categorical dimensions and the value
+            box_df = df[cat_dims + [var_name]]
+            # Create BoxWhisker using the dataframe
+            box_whisker = hv.BoxWhisker(box_df, kdims=cat_dims, vdims=[var_name])
+        else:
+            # Without categorical dimensions, create a single box
+            values = dataset[var_name].values.flatten()
+            box_whisker = hv.BoxWhisker(values, vdims=[var_name])
+
+        # Apply styling options
+        ylabel = f"{var_name}"
+        if hasattr(result_var, "units") and result_var.units:
+            ylabel += f" [{result_var.units}]"
+
+        box_whisker = box_whisker.opts(
+            title=title, ylabel=ylabel, box_fill_color="lightblue", **kwargs
+        )
+
+        return box_whisker
