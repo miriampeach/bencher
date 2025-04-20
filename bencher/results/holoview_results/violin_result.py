@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 import panel as pn
 import holoviews as hv
 from param import Parameter
@@ -14,10 +14,6 @@ from bencher.variables.results import ResultVar
 
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 
-# Use TYPE_CHECKING to avoid circular imports
-if TYPE_CHECKING:
-    pass
-
 
 class ViolinResult(HoloviewResult):
     """A class for creating violin plots from benchmark results.
@@ -28,8 +24,8 @@ class ViolinResult(HoloviewResult):
     the distribution of metrics across different configurations or repetitions.
     """
 
-    @staticmethod
-    def from_bench_result(bench_result):
+    @classmethod
+    def from_bench_result(cls, bench_result):
         """Get a violin plot directly from a BenchResult.
 
         Args:
@@ -109,15 +105,10 @@ class ViolinResult(HoloviewResult):
             hv.Violin: A HoloViews Violin plot of the benchmark data.
         """
         by = None
-        if hasattr(self, "plt_cnt_cfg") and self.plt_cnt_cfg.cat_cnt >= 2:
+        if self.plt_cnt_cfg.cat_cnt >= 2:
             by = self.plt_cnt_cfg.cat_vars[1].name
         da_plot = dataset[result_var.name]
-        title = (
-            self.title_from_ds(da_plot, result_var, **kwargs)
-            if hasattr(self, "title_from_ds")
-            else f"{result_var.name} Distribution"
-        )
-        time_widget_args = (
-            self.time_widget(title) if hasattr(self, "time_widget") else {"title": title}
-        )
+        title = self.title_from_ds(da_plot, result_var, **kwargs)
+        time_widget_args = self.time_widget(title)
+        print(kwargs)
         return da_plot.hvplot.violin(y=result_var.name, by=by, **time_widget_args, **kwargs)
