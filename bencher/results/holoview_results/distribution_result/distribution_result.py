@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, Tuple, List, Type
 import panel as pn
 import holoviews as hv
 from param import Parameter
 import xarray as xr
+import pandas as pd
 
 from bencher.results.bench_result_base import ReduceType
 from bencher.plotting.plot_filter import VarRange
@@ -18,14 +19,18 @@ class DistributionResult(HoloviewResult):
     This class provides common functionality for various distribution plot types that show
     the distribution shape of the data. Child classes implement specific plot types
     (e.g., violin plots, box and whisker plots) but share filtering and data preparation logic.
+    
+    Distribution plots are particularly useful for visualizing the statistical spread of 
+    benchmark metrics across different configurations, allowing for better understanding
+    of performance variability.
     """
 
     def to_distribution_plot(
         self,
         plot_method: Callable[[xr.Dataset, Parameter, Any], hv.Element],
-        result_var: Parameter = None,
+        result_var: Optional[Parameter] = None,
         override: bool = True,
-        **kwargs,
+        **kwargs: Any,
     ) -> Optional[pn.panel]:
         """Generates a distribution plot from benchmark data.
 
@@ -33,14 +38,14 @@ class DistributionResult(HoloviewResult):
         and then passes the filtered data to the specified plot method for rendering.
 
         Args:
-            plot_method: The method to use for creating the specific plot type
-            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
-            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            plot_method: The method to use for creating the specific plot type (e.g., violin, box-whisker)
+            result_var: The result variable to plot. If None, uses the default.
+            override: Whether to override filter restrictions. Defaults to True.
             **kwargs: Additional keyword arguments passed to the plot rendering.
 
         Returns:
-            Optional[pn.panel]: A panel containing the plot if data is appropriate,
-                              otherwise returns filter match results.
+            A panel containing the plot if data is appropriate,
+            otherwise returns filter match results.
         """
         return self.filter(
             plot_method,
@@ -56,19 +61,26 @@ class DistributionResult(HoloviewResult):
         )
 
     def _plot_distribution(
-        self, dataset: xr.Dataset, result_var: Parameter, plot_class: hv.Selection1DExpr, **kwargs
-    ) -> tuple[str, str, Any]:
-        """Prepares data for distribution plots.
+        self, 
+        dataset: xr.Dataset, 
+        result_var: Parameter, 
+        plot_class: Type[hv.Selection1DExpr], 
+        **kwargs: Any
+    ) -> hv.Element:
+        """Prepares data for distribution plots and creates the plot.
 
-        This method handles common operations needed for all distribution plot types.
+        This method handles common operations needed for all distribution plot types,
+        including converting data formats, setting up dimensions, and configuring
+        plot aesthetics.
 
         Args:
-            dataset (xr.Dataset): The dataset containing benchmark results.
-            result_var (Parameter): The result variable to plot.
-            **kwargs: Additional keyword arguments.
+            dataset: The dataset containing benchmark results.
+            result_var: The result variable to plot.
+            plot_class: The HoloViews plot class to use (e.g., hv.Violin, hv.BoxWhisker)
+            **kwargs: Additional keyword arguments for plot customization.
 
         Returns:
-            tuple: (var_name, title, dataframe, kdims) with prepared data for plotting
+            A HoloViews Element representing the distribution plot.
         """
         # Get the name of the result variable (which is the data we want to plot)
         var_name = result_var.name

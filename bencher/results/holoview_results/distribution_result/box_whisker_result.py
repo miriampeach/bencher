@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, Any, Dict, Union
 import panel as pn
 import holoviews as hv
 from param import Parameter
@@ -16,10 +16,19 @@ class BoxWhiskerResult(DistributionResult):
     methods to generate these plots from benchmark data, particularly useful for
     comparing distributions across different categorical variables or between
     different repetitions of the same benchmark.
+    
+    Box plots show:
+    - The median (middle line in the box)
+    - The interquartile range (IQR) as a box (25th to 75th percentile)
+    - Whiskers extending to the furthest data points within 1.5*IQR
+    - Outliers as individual points beyond the whiskers
     """
 
     def to_boxplot(
-        self, result_var: Parameter = None, override: bool = True, **kwargs
+        self, 
+        result_var: Optional[Parameter] = None, 
+        override: bool = True, 
+        **kwargs: Any
     ) -> Optional[pn.panel]:
         """Generates a box and whisker plot from benchmark data.
 
@@ -27,13 +36,13 @@ class BoxWhiskerResult(DistributionResult):
         and then passes the filtered data to to_boxplot_ds for rendering.
 
         Args:
-            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
-            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            result_var: The result variable to plot. If None, uses the default.
+            override: Whether to override filter restrictions. Defaults to True.
             **kwargs: Additional keyword arguments passed to the plot rendering.
 
         Returns:
-            Optional[pn.panel]: A panel containing the box plot if data is appropriate,
-                              otherwise returns filter match results.
+            A panel containing the box plot if data is appropriate,
+            otherwise returns filter match results.
         """
         return self.to_distribution_plot(
             self.to_boxplot_ds,
@@ -42,19 +51,27 @@ class BoxWhiskerResult(DistributionResult):
             **kwargs,
         )
 
-    def to_boxplot_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs) -> hv.BoxWhisker:
+    def to_boxplot_ds(
+        self, 
+        dataset: xr.Dataset, 
+        result_var: Parameter, 
+        **kwargs: Any
+    ) -> hv.BoxWhisker:
         """Creates a box and whisker plot from the provided dataset.
 
         Given a filtered dataset, this method generates a box and whisker visualization showing
         the distribution of values for a result variable, potentially grouped by a categorical variable.
 
         Args:
-            dataset (xr.Dataset): The dataset containing benchmark results.
-            result_var (Parameter): The result variable to plot.
-            **kwargs: Additional keyword arguments passed to the box plot options.
+            dataset: The dataset containing benchmark results.
+            result_var: The result variable to plot.
+            **kwargs: Additional keyword arguments for plot customization such as:
+                      - box_fill_color: Color for the box
+                      - whisker_color: Color for the whiskers
+                      - outlier_color: Color for outlier points
+                      - line_width: Width of lines in the plot
 
         Returns:
-            hv.BoxWhisker: A HoloViews BoxWhisker plot of the benchmark data.
+            A HoloViews BoxWhisker plot of the benchmark data.
         """
-
         return self._plot_distribution(dataset, result_var, hv.BoxWhisker, **kwargs)
