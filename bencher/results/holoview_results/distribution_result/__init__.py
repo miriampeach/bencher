@@ -1,6 +1,6 @@
 """Distribution plot classes for visualizing benchmark results.
 
-This module provides various visualization classes for showing the distribution 
+This module provides various visualization classes for showing the distribution
 of benchmark data through different plot types:
 
 - DistributionResult: Base class with common functionality for distribution plots

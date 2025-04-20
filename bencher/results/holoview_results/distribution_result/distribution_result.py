@@ -19,8 +19,8 @@ class DistributionResult(HoloviewResult):
     This class provides common functionality for various distribution plot types that show
     the distribution shape of the data. Child classes implement specific plot types
     (e.g., violin plots, box and whisker plots) but share filtering and data preparation logic.
-    
-    Distribution plots are particularly useful for visualizing the statistical spread of 
+
+    Distribution plots are particularly useful for visualizing the statistical spread of
     benchmark metrics across different configurations, allowing for better understanding
     of performance variability.
     """
@@ -61,11 +61,11 @@ class DistributionResult(HoloviewResult):
         )
 
     def _plot_distribution(
-        self, 
-        dataset: xr.Dataset, 
-        result_var: Parameter, 
-        plot_class: Type[hv.Selection1DExpr], 
-        **kwargs: Any
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        plot_class: Type[hv.Selection1DExpr],
+        **kwargs: Any,
     ) -> hv.Element:
         """Prepares data for distribution plots and creates the plot.
 

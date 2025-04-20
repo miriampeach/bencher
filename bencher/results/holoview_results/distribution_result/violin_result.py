@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Any
+from typing import Optional, Any, Type
 import panel as pn
 import holoviews as hv
 from param import Parameter
@@ -17,19 +17,16 @@ class ViolinResult(DistributionResult):
     the distribution shape of the data. This class provides methods to generate
     these plots from benchmark data, which is particularly useful for visualizing
     the distribution of metrics across different configurations or repetitions.
-    
+
     Violin plots display:
     - The full probability density of the data (the width of the "violin" at each point)
     - Summary statistics like median and interquartile ranges
-    - The overall distribution shape, revealing features like multi-modality that 
+    - The overall distribution shape, revealing features like multi-modality that
       box plots might miss
     """
 
     def to_violin(
-        self, 
-        result_var: Optional[Parameter] = None, 
-        override: bool = True, 
-        **kwargs: Any
+        self, result_var: Optional[Parameter] = None, override: bool = True, **kwargs: Any
     ) -> Optional[pn.panel]:
         """Generates a violin plot from benchmark data.
 
@@ -37,12 +34,12 @@ class ViolinResult(DistributionResult):
         and then passes the filtered data to to_violin_ds for rendering.
 
         Args:
-            result_var: The result variable to plot. If None, uses the default.
-            override: Whether to override filter restrictions. Defaults to True.
-            **kwargs: Additional keyword arguments passed to the plot rendering.
+            result_var (Optional[Parameter]): The result variable to plot. If None, uses the default.
+            override (bool): Whether to override filter restrictions. Defaults to True.
+            **kwargs (Any): Additional keyword arguments passed to the plot rendering.
 
         Returns:
-            A panel containing the violin plot if data is appropriate,
+            Optional[pn.panel]: A panel containing the violin plot if data is appropriate,
             otherwise returns filter match results.
         """
         return self.to_distribution_plot(
@@ -52,27 +49,22 @@ class ViolinResult(DistributionResult):
             **kwargs,
         )
 
-    def to_violin_ds(
-        self, 
-        dataset: xr.Dataset, 
-        result_var: Parameter, 
-        **kwargs: Any
-    ) -> hv.Violin:
+    def to_violin_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs: Any) -> hv.Violin:
         """Creates a violin plot from the provided dataset.
 
         Given a filtered dataset, this method generates a violin plot visualization showing
         the distribution of values for a result variable, potentially grouped by a categorical variable.
 
         Args:
-            dataset: The dataset containing benchmark results.
-            result_var: The result variable to plot.
-            **kwargs: Additional keyword arguments for plot customization, such as:
+            dataset (xr.Dataset): The dataset containing benchmark results.
+            result_var (Parameter): The result variable to plot.
+            **kwargs (Any): Additional keyword arguments for plot customization, such as:
                       - violin_color: Color for the violin body
                       - inner_color: Color for inner statistics markers
                       - line_width: Width of outline lines
                       - bandwidth: Controls the smoothness of the density estimate
 
         Returns:
-            A HoloViews Violin plot of the benchmark data.
+            hv.Violin: A HoloViews Violin plot of the benchmark data.
         """
         return self._plot_distribution(dataset, result_var, hv.Violin, **kwargs)

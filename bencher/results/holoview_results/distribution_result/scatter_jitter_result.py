@@ -18,7 +18,7 @@ class ScatterJitterResult(DistributionResult):
     This is particularly useful for smaller datasets where showing individual points
     provides more insight than aggregate statistics, or alongside box plots to show
     the actual data distribution.
-    
+
     Key features:
     - Displays individual data points rather than statistical summaries
     - Applies controlled random offsets to avoid point overlap
@@ -27,11 +27,11 @@ class ScatterJitterResult(DistributionResult):
     """
 
     def to_scatter_jitter(
-        self, 
-        result_var: Optional[Parameter] = None, 
-        override: bool = True, 
-        jitter: float = 0.1, 
-        **kwargs: Any
+        self,
+        result_var: Optional[Parameter] = None,
+        override: bool = True,
+        jitter: float = 0.1,
+        **kwargs: Any,
     ) -> Optional[pn.panel]:
         """Generates a scatter jitter plot from benchmark data.
 
@@ -57,11 +57,7 @@ class ScatterJitterResult(DistributionResult):
         )
 
     def to_scatter_jitter_ds(
-        self, 
-        dataset: xr.Dataset, 
-        result_var: Parameter, 
-        jitter: float = 0.1, 
-        **kwargs: Any
+        self, dataset: xr.Dataset, result_var: Parameter, jitter: float = 0.1, **kwargs: Any
     ) -> hv.Scatter:
         """Creates a scatter jitter plot from the provided dataset.
 
