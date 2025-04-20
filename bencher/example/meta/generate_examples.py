@@ -66,7 +66,11 @@ if __name__ == "__main__":
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_2D/example_2_cat_in_4_out_repeats.py", "2D"
+        "/workspaces/bencher/bencher/example/inputs_1D/example_3_cat_in_2_out.py", "3D"
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_2D/example_2_cat_in_4_out_repeats.py", "1D"
     )
 
     # todo, enable
