@@ -7,10 +7,12 @@ from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_results.holoview_result import HoloviewResult
-from bencher.results.holoview_results.box_whisker_result import BoxWhiskerResult
-from bencher.results.holoview_results.violin_result import ViolinResult
+
+# Updated imports for distribution result classes
+from bencher.results.holoview_results.distribution_result import BoxWhiskerResult
+from bencher.results.holoview_results.distribution_result import ViolinResult
 from bencher.results.holoview_results.scatter_result import ScatterResult
-from bencher.results.holoview_results.scatter_jitter_result import ScatterJitterResult
+from bencher.results.holoview_results.distribution_result import ScatterJitterResult
 from bencher.results.holoview_results.bar_result import BarResult
 from bencher.results.holoview_results.line_result import LineResult
 from bencher.results.holoview_results.curve_result import CurveResult
