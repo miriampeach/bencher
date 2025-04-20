@@ -53,8 +53,6 @@ def example_1_cat_in_2_out_repeats(
     run_cfg.repeats = 20
     bench = ExampleCat1D().to_bench(run_cfg, report)
     bench.plot_sweep()
-    bench.report.append(bench.get_result().to_violin())
-
     return bench
 
 
