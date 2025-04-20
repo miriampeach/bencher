@@ -34,6 +34,7 @@ class HoloviewResult(PanelResult):
             hv.opts.Bars(**width_height),
             hv.opts.Scatter(**width_height),
             hv.opts.BoxWhisker(**width_height),
+            hv.opts.Violin(**width_height),
             hv.opts.HeatMap(cmap="plasma", **width_height, colorbar=True),
             # hv.opts.Surface(**width_heigh),
             hv.opts.GridSpace(plot_size=400),
