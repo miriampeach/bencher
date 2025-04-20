@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Any, Type
+from typing import Optional, Any
 import panel as pn
 import holoviews as hv
 from param import Parameter

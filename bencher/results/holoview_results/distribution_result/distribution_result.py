@@ -1,10 +1,9 @@
 from __future__ import annotations
-from typing import Optional, Callable, Any, Tuple, List, Type
+from typing import Optional, Callable, Any, Type
 import panel as pn
 import holoviews as hv
 from param import Parameter
 import xarray as xr
-import pandas as pd
 
 from bencher.results.bench_result_base import ReduceType
 from bencher.plotting.plot_filter import VarRange
