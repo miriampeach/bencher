@@ -36,12 +36,25 @@ class BenchResult(
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
     def __init__(self, bench_cfg) -> None:
+        """Initialize a BenchResult instance.
+
+        Args:
+            bench_cfg: The benchmark configuration object containing settings and result data
+        """
         PlotlyResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
         # DataSetResult.__init__(self.bench_cfg)
 
     @staticmethod
-    def default_plot_callbacks():
+    def default_plot_callbacks() -> List[callable]:
+        """Get the default list of plot callback functions.
+
+        These callbacks are used by default in the to_auto method if no specific
+        plot list is provided.
+
+        Returns:
+            List[callable]: A list of plotting callback functions
+        """
         return [
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
             BarResult.to_bar,
@@ -57,14 +70,22 @@ class BenchResult(
         ]
 
     @staticmethod
-    def plotly_callbacks():
+    def plotly_callbacks() -> List[callable]:
+        """Get the list of Plotly-specific callback functions.
+
+        Returns:
+            List[callable]: A list of Plotly-based visualization callback functions
+        """
         return [SurfaceResult.to_surface, PlotlyResult.to_volume]
 
     def plot(self) -> pn.panel:
-        """Plots the benchresult using the plot callbacks defined by the bench run
+        """Plots the benchresult using the plot callbacks defined by the bench run.
+
+        This method uses the plot_callbacks defined in the bench_cfg to generate
+        plots for the benchmark results.
 
         Returns:
-             pn.panel: A panel representation of the results
+             pn.panel: A panel representation of the results, or None if no plot_callbacks defined
         """
         if self.bench_cfg.plot_callbacks is not None:
             return pn.Column(*[cb(self) for cb in self.bench_cfg.plot_callbacks])
@@ -78,6 +99,18 @@ class BenchResult(
         override: bool = False,  # false so that plots that are not supported are not shown
         **kwargs,
     ) -> List[pn.panel]:
+        """Automatically generate plots based on the provided plot callbacks.
+
+        Args:
+            plot_list (List[callable], optional): List of plot callback functions to use. Defaults to None.
+            remove_plots (List[callable], optional): List of plot callback functions to exclude. Defaults to None.
+            default_container (type, optional): Default container type for the plots. Defaults to pn.Column.
+            override (bool, optional): Whether to override unsupported plots. Defaults to False.
+            **kwargs: Additional keyword arguments for plot configuration.
+
+        Returns:
+            List[pn.panel]: A list of panel objects containing the generated plots.
+        """
         self.plt_cnt_cfg.print_debug = False
         plot_list = listify(plot_list)
         remove_plots = listify(remove_plots)
@@ -105,15 +138,14 @@ class BenchResult(
         return row.pane
 
     def to_auto_plots(self, **kwargs) -> pn.panel:
-        """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled
+        """Given the dataset result of a benchmark run, automatically deduce how to plot the data based on the types of variables that were sampled.
 
         Args:
-            bench_cfg (BenchCfg): Information on how the benchmark was sampled and the resulting data
+            **kwargs: Additional keyword arguments for plot configuration.
 
         Returns:
-            pn.pane: A panel containing plot results
+            pn.panel: A panel containing plot results.
         """
-
         plot_cols = pn.Column()
         plot_cols.append(self.to_sweep_summary(name="Plots View"))
         plot_cols.append(self.to_auto(**kwargs))
