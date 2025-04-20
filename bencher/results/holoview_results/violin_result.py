@@ -13,6 +13,7 @@ from bencher.plotting.plot_filter import VarRange
 from bencher.variables.results import ResultVar
 
 from bencher.results.holoview_results.holoview_result import HoloviewResult
+from bencher.utils import params_to_str
 
 
 class ViolinResult(HoloviewResult):
@@ -23,42 +24,6 @@ class ViolinResult(HoloviewResult):
     these plots from benchmark data, which is particularly useful for visualizing
     the distribution of metrics across different configurations or repetitions.
     """
-
-    @classmethod
-    def from_bench_result(cls, bench_result):
-        """Get a violin plot directly from a BenchResult.
-
-        Args:
-            bench_result: The BenchResult to create a violin plot from
-
-        Returns:
-            func: A function that creates a violin plot when called with a result_var
-        """
-
-        # Define a wrapper function that handles the violin plot creation
-        def get_violin_plot(result_var=None, **kwargs):
-            override = kwargs.pop("override", True)
-
-            # Create a plot callback that accepts exactly what filter will pass to it
-            def plot_callback(dataset, result_var=result_var, **kwargs):
-                return dataset[result_var.name].hvplot.violin(
-                    y=result_var.name, title=f"{result_var.name} Distribution", **kwargs
-                )
-
-            # Use the result's filter method which will properly handle the dataset
-            return bench_result.filter(
-                plot_callback,
-                float_range=VarRange(0, 0),
-                cat_range=VarRange(0, None),
-                repeats_range=VarRange(2, None),
-                reduce=ReduceType.NONE,
-                target_dimension=2,
-                result_var=result_var,
-                result_types=(ResultVar),
-                override=override,
-            )
-
-        return get_violin_plot
 
     def to_violin(
         self, result_var: Parameter = None, override: bool = True, **kwargs
@@ -104,11 +69,26 @@ class ViolinResult(HoloviewResult):
         Returns:
             hv.Violin: A HoloViews Violin plot of the benchmark data.
         """
-        by = None
-        if self.plt_cnt_cfg.cat_cnt >= 2:
-            by = self.plt_cnt_cfg.cat_vars[1].name
-        da_plot = dataset[result_var.name]
-        title = self.title_from_ds(da_plot, result_var, **kwargs)
-        time_widget_args = self.time_widget(title)
-        print(kwargs)
-        return da_plot.hvplot.violin(y=result_var.name, by=by, **time_widget_args, **kwargs)
+        # Get the name of the result variable (which is the data we want to plot)
+        var_name = result_var.name
+
+        # Create plot title
+        title = self.title_from_ds(dataset[var_name], result_var, **kwargs)
+
+        # Convert dataset to dataframe for HoloViews
+        df = dataset[var_name].to_dataframe().reset_index()
+
+        # Get kdims from categorical variables
+        kdims = params_to_str(self.plt_cnt_cfg.cat_vars)
+
+        # Create the violin plot using HoloViews directly
+        return hv.Violin(
+            df,
+            kdims=kdims,
+            vdims=[var_name],
+        ).opts(
+            title=title,
+            ylabel=f"{var_name} [{result_var.units}]",
+            xrotation=30,  # Rotate x-axis labels by 30 degrees
+            **kwargs,
+        )
