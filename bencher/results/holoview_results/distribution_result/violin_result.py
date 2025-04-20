@@ -26,14 +26,6 @@ class ViolinResult(DistributionResult):
     """
 
     def to_plot(
-        self,
-        result_var: Optional[Parameter] = None,
-        override: bool = True,
-        **kwargs: Any,
-    ) -> Optional[pn.panel]:
-        return self.to_violin(result_var, override,  **kwargs)
-
-    def to_violin(
         self, result_var: Optional[Parameter] = None, override: bool = True, **kwargs: Any
     ) -> Optional[pn.panel]:
         """Generates a violin plot from benchmark data.

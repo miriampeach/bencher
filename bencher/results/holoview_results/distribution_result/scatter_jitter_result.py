@@ -33,15 +33,6 @@ class ScatterJitterResult(DistributionResult):
         jitter: float = 0.1,
         **kwargs: Any,
     ) -> Optional[pn.panel]:
-        return self.to_scatter_jitter(result_var, override, jitter, **kwargs)
-
-    def to_scatter_jitter(
-        self,
-        result_var: Optional[Parameter] = None,
-        override: bool = True,
-        jitter: float = 0.1,
-        **kwargs: Any,
-    ) -> Optional[pn.panel]:
         """Generates a scatter jitter plot from benchmark data.
 
         This method applies filters to ensure the data is appropriate for a scatter plot
