@@ -57,17 +57,5 @@ class ViolinResult(DistributionResult):
         Returns:
             hv.Violin: A HoloViews Violin plot of the benchmark data.
         """
-        # Prepare the data using the common method from the parent class
-        var_name, title, df, kdims = self.prepare_distribution_data(dataset, result_var, **kwargs)
 
-        # Create the violin plot using HoloViews directly
-        return hv.Violin(
-            df,
-            kdims=kdims,
-            vdims=[var_name],
-        ).opts(
-            title=title,
-            ylabel=f"{var_name} [{result_var.units}]",
-            xrotation=30,  # Rotate x-axis labels by 30 degrees
-            **kwargs,
-        )
+        return self._plot_distribution(dataset, result_var, hv.Violin, **kwargs)

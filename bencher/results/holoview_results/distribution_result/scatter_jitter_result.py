@@ -65,16 +65,4 @@ class ScatterJitterResult(DistributionResult):
             hv.Scatter: A HoloViews Scatter plot of the benchmark data with jittered points.
         """
         # Prepare the data using the common method from the parent class
-        var_name, title, df, kdims = self.prepare_distribution_data(dataset, result_var, **kwargs)
-
-        return hv.Scatter(
-            df,
-            kdims=kdims,
-            vdims=[var_name],
-        ).opts(
-            title=title,
-            ylabel=f"{var_name} [{result_var.units}]",
-            xrotation=30,  # Rotate x-axis labels by 30 degrees
-            jitter=jitter,
-            **kwargs,
-        )
+        return self._plot_distribution(dataset, result_var, hv.Scatter, jitter=jitter, **kwargs)

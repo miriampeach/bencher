@@ -55,8 +55,8 @@ class DistributionResult(HoloviewResult):
             **kwargs,
         )
 
-    def prepare_distribution_data(
-        self, dataset: xr.Dataset, result_var: Parameter, **kwargs
+    def _plot_distribution(
+        self, dataset: xr.Dataset, result_var: Parameter, plot_class: hv.Selection1DExpr, **kwargs
     ) -> tuple[str, str, Any]:
         """Prepares data for distribution plots.
 
@@ -79,4 +79,13 @@ class DistributionResult(HoloviewResult):
         # Convert dataset to dataframe for HoloViews
         df = dataset[var_name].to_dataframe().reset_index()
         kdims = params_to_str(self.plt_cnt_cfg.cat_vars)
-        return var_name, title, df, kdims
+        return plot_class(
+            df,
+            kdims=kdims,
+            vdims=[var_name],
+        ).opts(
+            title=title,
+            ylabel=f"{var_name} [{result_var.units}]",
+            xrotation=30,  # Rotate x-axis labels by 30 degrees
+            **kwargs,
+        )
