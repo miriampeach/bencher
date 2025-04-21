@@ -9,6 +9,10 @@ from bencher.results.holoview_results.distribution_result.distribution_result im
     DistributionResult,
 )
 
+from bencher.results.bench_result_base import ReduceType
+from bencher.plotting.plot_filter import VarRange
+from bencher.variables.results import ResultVar
+
 
 class ScatterJitterResult(DistributionResult):
     """A class for creating scatter jitter plots from benchmark results.
