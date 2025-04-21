@@ -63,6 +63,13 @@ class BenchResult(
     #     return result_type(self.bench_cfg).to_plot(self)
     # def to_plot(self, result_var: Parameter = None, override: bool = True, **kwargs):
     #     return self.to_bar(result_var, override, **kwargs)
+    @classmethod
+    def from_existing(cls, original: BenchResult) -> BenchResult:
+        new_instance = cls(original.bench_cfg)
+        new_instance.ds = original.ds
+        new_instance.bench_cfg = original.bench_cfg
+        new_instance.plt_cnt_cfg = original.plt_cnt_cfg
+        return new_instance
 
     @staticmethod
     def default_plot_callbacks() -> List[callable]:

@@ -1197,12 +1197,7 @@ class Bench(BenchPlotServer):
         Returns:
             BenchResult: The current instance of the benchmark result
         """
-        result = self.get_result()
-        print(result_type)
-        result_instance = result_type(result.bench_cfg)
-        result_instance.ds = result.ds
-        result_instance.bench_cfg = result.bench_cfg
-        result_instance.plt_cnt_cfg = result.plt_cnt_cfg
+        result_instance =result_type.from_existing(self.get_result())
         return result_instance.to_plot(result_var=result_var, override=override, **kwargs)
 
     def add(
