@@ -25,6 +25,46 @@ class HeatmapResult(HoloviewResult):
     additional information when hovering over or selecting points on the heatmap.
     """
 
+    def to_plot(
+        self,
+        result_var: Parameter = None,
+        tap_var=None,
+        tap_container: pn.pane.panel = None,
+        tap_container_direction: pn.Column | pn.Row = None,
+        target_dimension=2,
+        override: bool = True,
+        use_tap: bool = None,
+        **kwargs,
+    ) -> Optional[pn.panel]:
+        """Generates a heatmap visualization from benchmark data.
+        
+        This is a convenience method that calls to_heatmap() with the same parameters.
+        
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            tap_var: Variables to display when tapping on heatmap points.
+            tap_container (pn.pane.panel, optional): Container to hold tapped information.
+            tap_container_direction (pn.Column | pn.Row, optional): Layout direction for the tap container.
+            target_dimension (int, optional): Target dimensionality for the plot. Defaults to 2.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            use_tap (bool, optional): Whether to enable tap functionality.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+            
+        Returns:
+            Optional[pn.panel]: A panel containing the heatmap if data is appropriate,
+                              otherwise returns filter match results.
+        """
+        return self.to_heatmap(
+            result_var=result_var,
+            tap_var=tap_var,
+            tap_container=tap_container,
+            tap_container_direction=tap_container_direction,
+            target_dimension=target_dimension,
+            override=override,
+            use_tap=use_tap,
+            **kwargs
+        )
+
     def to_heatmap(
         self,
         result_var: Parameter = None,

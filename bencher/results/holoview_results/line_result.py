@@ -25,6 +25,43 @@ class LineResult(HoloviewResult):
     about specific data points.
     """
 
+    def to_plot(
+        self,
+        result_var: Parameter = None,
+        tap_var=None,
+        tap_container: pn.pane.panel = None,
+        target_dimension=2,
+        override: bool = True,
+        use_tap: bool = None,
+        **kwargs,
+    ) -> Optional[pn.panel]:
+        """Generates a line plot from benchmark data.
+        
+        This is a convenience method that calls to_line() with the same parameters.
+        
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            tap_var: Variables to display when tapping on line plot points.
+            tap_container (pn.pane.panel, optional): Container to hold tapped information.
+            target_dimension (int, optional): Target dimensionality for the plot. Defaults to 2.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            use_tap (bool, optional): Whether to enable tap functionality.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+            
+        Returns:
+            Optional[pn.panel]: A panel containing the line plot if data is appropriate,
+                              otherwise returns filter match results.
+        """
+        return self.to_line(
+            result_var=result_var,
+            tap_var=tap_var,
+            tap_container=tap_container,
+            target_dimension=target_dimension,
+            override=override,
+            use_tap=use_tap,
+            **kwargs
+        )
+
     def to_line(
         self,
         result_var: Parameter = None,
