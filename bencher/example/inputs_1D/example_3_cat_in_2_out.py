@@ -9,11 +9,9 @@ random.seed(0)
 class Example3Cat2Out(bch.ParametrizedSweep):
     """Example class for 3 categorical parameter sweep with two output variables."""
 
-    product_type = bch.StringSweep(["electronics", "clothing", "home"], doc="Type of product")
-    price_range = bch.StringSweep(["budget", "mid-range", "premium"], doc="Price range of product")
-    target_audience = bch.StringSweep(
-        ["youth", "adult", "senior"], doc="Target audience for product"
-    )
+    product_type = bch.StringSweep(["electronics", "clothing"], doc="Type of product")
+    price_range = bch.StringSweep(["budget", "premium"], doc="Price range of product")
+    target_audience = bch.StringSweep(["youth", "adult"], doc="Target audience for product")
 
     expected_sales = bch.ResultVar(units="units", doc="Expected sales volume")
     customer_satisfaction = bch.ResultVar(units="score", doc="Customer satisfaction score (1-100)")
@@ -33,20 +31,14 @@ class Example3Cat2Out(bch.ParametrizedSweep):
         if self.product_type == "electronics":
             base_sales = 1000
             base_satisfaction = 75
-        elif self.product_type == "clothing":
+        else:  # clothing
             base_sales = 1500
             base_satisfaction = 70
-        else:  # home
-            base_sales = 800
-            base_satisfaction = 80
 
         # Modify based on price range
         if self.price_range == "budget":
             sales_modifier = 1.5
             satisfaction_modifier = 0.9
-        elif self.price_range == "mid-range":
-            sales_modifier = 1.2
-            satisfaction_modifier = 1.1
         else:  # premium
             sales_modifier = 0.8
             satisfaction_modifier = 1.3
@@ -56,25 +48,12 @@ class Example3Cat2Out(bch.ParametrizedSweep):
             if self.product_type == "electronics":
                 audience_sales_modifier = 1.4
                 audience_satisfaction_modifier = 1.1
-            elif self.product_type == "clothing":
+            else:  # clothing
                 audience_sales_modifier = 1.3
                 audience_satisfaction_modifier = 1.2
-            else:  # home
-                audience_sales_modifier = 0.7
-                audience_satisfaction_modifier = 0.8
-        elif self.target_audience == "adult":
+        else:  # adult
             audience_sales_modifier = 1.2
             audience_satisfaction_modifier = 1.0
-        else:  # senior
-            if self.product_type == "electronics":
-                audience_sales_modifier = 0.6
-                audience_satisfaction_modifier = 0.7
-            elif self.product_type == "clothing":
-                audience_sales_modifier = 0.8
-                audience_satisfaction_modifier = 0.9
-            else:  # home
-                audience_sales_modifier = 1.3
-                audience_satisfaction_modifier = 1.2
 
         # Calculate final values with some randomness
         self.expected_sales = int(
