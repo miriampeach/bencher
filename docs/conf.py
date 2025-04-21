@@ -59,6 +59,7 @@ nbsite_gallery_conf = {
             "title": "Reference Gallery",
             "intro": ("This shows examples of what various dimensionalities of sweep look like."),
             "sections": [
+                "inputs_0_float",
                 "0D",
                 "1D",
                 "2D",
