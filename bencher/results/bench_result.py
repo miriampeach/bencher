@@ -66,7 +66,7 @@ class BenchResult(
             BarResult.to_bar,
             BoxWhiskerResult.to_boxplot,
             # ViolinResult.to_violin,
-            # ScatterJitterResult.to_scatter_jitter,
+            ScatterJitterResult.to_scatter_jitter,
             CurveResult.to_curve,
             LineResult.to_line,
             HeatmapResult.to_heatmap,

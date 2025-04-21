@@ -48,11 +48,17 @@ class ScatterJitterResult(DistributionResult):
             A panel containing the scatter jitter plot if data is appropriate,
             otherwise returns filter match results.
         """
-        kwargs["jitter"] = jitter
-        return self.to_distribution_plot(
+        return self.filter(
             self.to_scatter_jitter_ds,
+            float_range=VarRange(0, 0),
+            cat_range=VarRange(0, 2),
+            repeats_range=VarRange(2, None),
+            reduce=ReduceType.NONE,
+            target_dimension=self.plt_cnt_cfg.cat_cnt + 1,  # +1 cos we have a repeats dimension
             result_var=result_var,
+            result_types=(ResultVar),
             override=override,
+            jitter=jitter,
             **kwargs,
         )
 
