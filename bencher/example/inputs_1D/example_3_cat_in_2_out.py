@@ -47,10 +47,6 @@ class PythonOperationsBenchmark(bch.ParametrizedSweep):
         execution_time_ms = (end_time - start_time) * 1000  # Convert to ms
         peak_memory_kb = peak / 1024  # Convert bytes to KB
 
-        # Add variation to make visualization more interesting
-        execution_time_ms *= random.uniform(0.95, 1.05)
-        peak_memory_kb *= random.uniform(0.98, 1.02)
-
         return execution_time_ms, peak_memory_kb
 
     def __call__(self, **kwargs) -> dict:
@@ -71,15 +67,23 @@ class PythonOperationsBenchmark(bch.ParametrizedSweep):
         if self.data_structure == "list":
             data = list(range(size)) if self.operation_type == "read" else []
             if self.operation_type == "read":
-                operation = lambda: [data[random.randint(0, size - 1)] for _ in range(size)]
+
+                def operation():
+                    return [data[random.randint(0, size - 1)] for _ in range(size)]
             else:  # write
-                operation = lambda: [data.append(i) for i in range(size)]
+
+                def operation():
+                    return [data.append(i) for i in range(size)]
         else:  # dict
             data = {i: i for i in range(size)} if self.operation_type == "read" else {}
             if self.operation_type == "read":
-                operation = lambda: [data[random.randint(0, size - 1)] for _ in range(size)]
+
+                def operation():
+                    return [data[random.randint(0, size - 1)] for _ in range(size)]
             else:  # write
-                operation = lambda: [data.update({i: i}) for i in range(size)]
+
+                def operation():
+                    return [data.update({i: i}) for i in range(size)]
 
         # Run the benchmark
         self.execution_time, self.memory_peak = self._run_benchmark(operation)
