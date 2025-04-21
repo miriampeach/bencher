@@ -5,7 +5,7 @@ It benchmarks different Python operations to compare their performance character
 
 import random
 import time
-import sys
+import tracemalloc
 import bencher as bch
 
 random.seed(0)
@@ -14,18 +14,44 @@ random.seed(0)
 class PythonOperationsBenchmark(bch.ParametrizedSweep):
     """Example class for benchmarking different Python operations using categorical variables."""
 
-    data_structure = bch.StringSweep(
-        ["list", "dict"], doc="Type of data structure to operate on"
-    )
-    operation_type = bch.StringSweep(
-        ["read", "write"], doc="Type of operation to perform"
-    )
-    data_size = bch.StringSweep(
-        ["small", "medium"], doc="Size of data to process"
-    )
+    data_structure = bch.StringSweep(["list", "dict"], doc="Type of data structure to operate on")
+    operation_type = bch.StringSweep(["read", "write"], doc="Type of operation to perform")
+    data_size = bch.StringSweep(["small", "medium"], doc="Size of data to process")
 
     execution_time = bch.ResultVar(units="ms", doc="Execution time in milliseconds")
-    memory_usage = bch.ResultVar(units="bytes", doc="Actual memory usage in bytes")
+    memory_peak = bch.ResultVar(units="KB", doc="Peak memory usage in kilobytes")
+
+    def _run_benchmark(self, operation_func):
+        """Run a benchmark operation with memory tracing and timing.
+
+        Args:
+            operation_func: Function to benchmark
+
+        Returns:
+            tuple: (execution_time_ms, peak_memory_kb)
+        """
+        # Start tracing memory allocations
+        tracemalloc.start()
+        tracemalloc.clear_traces()
+
+        # Perform timed operation
+        start_time = time.perf_counter()
+        operation_func()
+        end_time = time.perf_counter()
+
+        # Get memory usage and stop tracing
+        _, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+        # Calculate metrics with some natural variation
+        execution_time_ms = (end_time - start_time) * 1000  # Convert to ms
+        peak_memory_kb = peak / 1024  # Convert bytes to KB
+
+        # Add variation to make visualization more interesting
+        execution_time_ms *= random.uniform(0.95, 1.05)
+        peak_memory_kb *= random.uniform(0.98, 1.02)
+
+        return execution_time_ms, peak_memory_kb
 
     def __call__(self, **kwargs) -> dict:
         """Execute the benchmark for the given set of parameters.
@@ -39,105 +65,25 @@ class PythonOperationsBenchmark(bch.ParametrizedSweep):
         self.update_params_from_kwargs(**kwargs)
 
         # Determine data size
-        if self.data_size == "small":
-            size = 1000
-        else:  # medium
-            size = 10000
+        size = 100 if self.data_size == "small" else 1000
 
-        # Create test data according to the specified data structure
+        # Define operations based on parameters
         if self.data_structure == "list":
+            data = list(range(size)) if self.operation_type == "read" else []
             if self.operation_type == "read":
-                # Benchmark list access operations
-                data = list(range(size))
-                start_time = time.perf_counter()
-                
-                # Perform random access operations
-                for _ in range(1000):
-                    _ = data[random.randint(0, size-1)]
-                
-                end_time = time.perf_counter()
-                self.execution_time = (end_time - start_time) * 1000  # Convert to ms
-                self.memory_usage = sys.getsizeof(data)
-                
-                # Measure memory of individual elements to get a more accurate picture
-                sample_size = min(100, size)
-                for i in random.sample(range(size), sample_size):
-                    self.memory_usage += sys.getsizeof(data[i])
-                # Scale up to estimate total including overhead
-                self.memory_usage = int(self.memory_usage * (size / sample_size))
-            
+                operation = lambda: [data[random.randint(0, size - 1)] for _ in range(size)]
             else:  # write
-                # Benchmark list append operations
-                data = []
-                start_time = time.perf_counter()
-                
-                # Perform append operations
-                for i in range(size):
-                    data.append(i)
-                
-                end_time = time.perf_counter()
-                self.execution_time = (end_time - start_time) * 1000  # Convert to ms
-                
-                # Measure actual memory usage
-                self.memory_usage = sys.getsizeof(data)
-                
-                # Add memory of individual elements
-                sample_size = min(100, size)
-                for i in random.sample(range(size), sample_size):
-                    self.memory_usage += sys.getsizeof(data[i])
-                # Scale up to estimate total including overhead
-                self.memory_usage = int(self.memory_usage * (size / sample_size))
-        
+                operation = lambda: [data.append(i) for i in range(size)]
         else:  # dict
+            data = {i: i for i in range(size)} if self.operation_type == "read" else {}
             if self.operation_type == "read":
-                # Benchmark dictionary access operations
-                data = {i: i for i in range(size)}
-                start_time = time.perf_counter()
-                
-                # Perform random access operations
-                for _ in range(1000):
-                    _ = data[random.randint(0, size-1)]
-                
-                end_time = time.perf_counter()
-                self.execution_time = (end_time - start_time) * 1000  # Convert to ms
-                
-                # Measure actual memory usage
-                self.memory_usage = sys.getsizeof(data)
-                
-                # Add memory of a sample of keys and values
-                sample_size = min(100, size)
-                sample_keys = random.sample(list(data.keys()), sample_size)
-                for k in sample_keys:
-                    self.memory_usage += sys.getsizeof(k) + sys.getsizeof(data[k])
-                # Scale up to estimate total including overhead
-                self.memory_usage = int(self.memory_usage * (size / sample_size))
-            
+                operation = lambda: [data[random.randint(0, size - 1)] for _ in range(size)]
             else:  # write
-                # Benchmark dictionary insertion operations
-                data = {}
-                start_time = time.perf_counter()
-                
-                # Perform insertion operations
-                for i in range(size):
-                    data[i] = i
-                
-                end_time = time.perf_counter()
-                self.execution_time = (end_time - start_time) * 1000  # Convert to ms
-                
-                # Measure actual memory usage
-                self.memory_usage = sys.getsizeof(data)
-                
-                # Add memory of a sample of keys and values
-                sample_size = min(100, size)
-                sample_keys = random.sample(list(data.keys()), sample_size)
-                for k in sample_keys:
-                    self.memory_usage += sys.getsizeof(k) + sys.getsizeof(data[k])
-                # Scale up to estimate total including overhead
-                self.memory_usage = int(self.memory_usage * (size / sample_size))
+                operation = lambda: [data.update({i: i}) for i in range(size)]
 
-        # Add a little variability to make the benchmark more realistic
-        self.execution_time *= random.uniform(0.95, 1.05)
-        
+        # Run the benchmark
+        self.execution_time, self.memory_peak = self._run_benchmark(operation)
+
         return super().__call__(**kwargs)
 
 
@@ -161,7 +107,7 @@ def example_3_cat_in_2_out(
     bench = PythonOperationsBenchmark().to_bench(run_cfg, report)
     bench.plot_sweep(
         title="Python Operations Performance Benchmark",
-        description="Comparing execution time and memory usage across Python data structures and operations"
+        description="Comparing execution time and peak memory usage across Python data structures and operations",
     )
     return bench
 
