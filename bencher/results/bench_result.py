@@ -20,7 +20,7 @@ from bencher.results.holoview_results.line_result import LineResult
 from bencher.results.holoview_results.curve_result import CurveResult
 from bencher.results.holoview_results.heatmap_result import HeatmapResult
 from bencher.results.holoview_results.surface_result import SurfaceResult
-from bencher.results.hvplot_result import HvplotResult
+from bencher.results.histogram_result import HistogramResult
 from bencher.results.dataset_result import DataSetResult
 from bencher.utils import listify
 
@@ -37,7 +37,7 @@ class BenchResult(
     CurveResult,
     SurfaceResult,
     HoloviewResult,
-    HvplotResult,
+    HistogramResult,
     VideoSummaryResult,
     DataSetResult,
 ):  # noqa pylint: disable=too-many-ancestors
@@ -97,7 +97,7 @@ class BenchResult(
             CurveResult.to_curve,
             LineResult.to_line,
             HeatmapResult.to_heatmap,
-            HvplotResult.to_histogram,
+            HistogramResult.to_plot,
             PlotlyResult.to_volume,
             # PanelResult.to_video,
             PanelResult.to_panes,

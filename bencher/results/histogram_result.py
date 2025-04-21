@@ -13,7 +13,7 @@ from bencher.plotting.plot_filter import VarRange
 from bencher.variables.results import ResultVar
 
 
-class HvplotResult(PanelResult):
+class HistogramResult(PanelResult):
     def to_explorer(self) -> pn.pane.Pane:
         """Produces a hvplot explorer instance to explore the generated dataset
         see: https://hvplot.holoviz.org/getting_started/explorer.html
@@ -29,7 +29,7 @@ class HvplotResult(PanelResult):
         # TODO look into why this is, its probably due to how I am setting up the indexing in xarray.
         return self.to_pandas().hvplot.explorer()
 
-    def to_histogram(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
+    def to_plot(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
         return self.filter(
             self.to_histogram_ds,
             float_range=VarRange(0, 0),
