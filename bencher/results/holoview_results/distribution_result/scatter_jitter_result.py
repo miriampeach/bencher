@@ -55,7 +55,7 @@ class ScatterJitterResult(DistributionResult):
         return self.filter(
             self.to_scatter_jitter_ds,
             float_range=VarRange(0, 0),
-            cat_range=VarRange(0, 2),
+            cat_range=VarRange(0, 1),
             repeats_range=VarRange(2, None),
             reduce=ReduceType.NONE,
             target_dimension=self.plt_cnt_cfg.cat_cnt + 1,  # +1 cos we have a repeats dimension
