@@ -95,7 +95,7 @@ class BenchResult(
             BarResult.to_plot,
             BoxWhiskerResult.to_plot,
             # ViolinResult.to_violin,
-            # ScatterJitterResult.to_scatter_jitter,
+            # ScatterJitterResult.to_plot,
             CurveResult.to_plot,
             LineResult.to_plot,
             HeatmapResult.to_plot,
