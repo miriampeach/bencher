@@ -16,7 +16,7 @@ def example_1D_bool(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     )
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
-    res = bench.plot_sweep(
+    bench.plot_sweep(
         title="Example 1D Bool",
         input_vars=[ExampleBenchCfgIn.param.noisy],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
