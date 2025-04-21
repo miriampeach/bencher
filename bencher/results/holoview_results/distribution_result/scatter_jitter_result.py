@@ -56,7 +56,7 @@ class ScatterJitterResult(DistributionResult):
             reduce=ReduceType.NONE,
             target_dimension=self.plt_cnt_cfg.cat_cnt + 1,  # +1 cos we have a repeats dimension
             result_var=result_var,
-            result_types=(ResultVar),
+            result_types=(ResultVar,),
             override=override,
             jitter=jitter,
             **kwargs,
