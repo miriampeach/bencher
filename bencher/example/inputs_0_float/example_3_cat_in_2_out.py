@@ -63,8 +63,8 @@ class PythonOperationsBenchmark(bch.ParametrizedSweep):
             memory_factor *= 10
 
         # Calculate final metrics with increased variance
-        self.execution_time = base_time * time_factor * random.uniform(0.85, 1.15)
-        self.memory_peak = base_memory * memory_factor * random.uniform(0.90, 1.10)
+        self.execution_time = base_time * time_factor * random.gauss(0.85, 1.15)
+        self.memory_peak = base_memory * memory_factor * random.gauss(0.90, 1.10)
 
         return super().__call__(**kwargs)
 

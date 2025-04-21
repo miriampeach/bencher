@@ -40,8 +40,8 @@ class PythonOperations0CatBenchmark(bch.ParametrizedSweep):
 
         # Add significant variance to show distribution of results
         # even with fixed inputs
-        self.execution_time = base_time * random.uniform(0.75, 1.25)
-        self.memory_peak = base_memory * random.uniform(0.80, 1.20)
+        self.execution_time = base_time * random.gauss(0.75, 1.25)
+        self.memory_peak = base_memory * random.gauss(0.80, 1.20)
 
         return super().__call__(**kwargs)
 
@@ -65,7 +65,7 @@ def example_0_cat_in_2_out(
 
     if run_cfg is None:
         run_cfg = bch.BenchRunCfg()
-    run_cfg.repeats = 10  # More repeats to show distribution
+    run_cfg.repeats = 100  # More repeats to show distribution
     bench = PythonOperations0CatBenchmark().to_bench(run_cfg, report)
     bench.plot_sweep(
         title="Python List Read Operation Performance (Fixed Inputs)",

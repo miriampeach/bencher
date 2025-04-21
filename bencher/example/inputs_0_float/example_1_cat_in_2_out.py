@@ -50,8 +50,8 @@ class PythonOperations1CatBenchmark(bch.ParametrizedSweep):
             memory_factor = 0.9
 
         # Calculate final metrics with significant variance to show differences
-        self.execution_time = base_time * time_factor * random.uniform(0.80, 1.20)
-        self.memory_peak = base_memory * memory_factor * random.uniform(0.85, 1.15)
+        self.execution_time = base_time * time_factor * random.gauss(0.80, 1.20)
+        self.memory_peak = base_memory * memory_factor * random.gauss(0.85, 1.15)
 
         return super().__call__(**kwargs)
 
