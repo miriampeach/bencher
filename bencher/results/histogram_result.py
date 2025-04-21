@@ -14,21 +14,6 @@ from bencher.variables.results import ResultVar
 
 
 class HistogramResult(VideoResult):
-    def to_explorer(self) -> pn.pane.Pane:
-        """Produces a hvplot explorer instance to explore the generated dataset
-        see: https://hvplot.holoviz.org/getting_started/explorer.html
-
-        Returns:
-            pn.pane.Pane: A dynamic pane for exploring a dataset
-        """
-
-        if len(self.bench_cfg.input_vars) > 0:
-            return self.to_xarray().hvplot.explorer()
-
-        # For some reason hvplot doesn't like 1D datasets in xarray, so convert to pandas which it has no problem with
-        # TODO look into why this is, its probably due to how I am setting up the indexing in xarray.
-        return self.to_pandas().hvplot.explorer()
-
     def to_plot(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
         return self.filter(
             self.to_histogram_ds,
