@@ -33,7 +33,7 @@ class VolumeResult(BenchResultBase):
 
     def to_volume(self, result_var: Parameter = None, override: bool = True, **kwargs):
         return self.filter(
-            self.to_volume_da,
+            self.to_volume_ds,
             float_range=VarRange(3, 3),
             cat_range=VarRange(-1, 0),
             reduce=ReduceType.REDUCE,
@@ -44,7 +44,7 @@ class VolumeResult(BenchResultBase):
             **kwargs,
         )
 
-    def to_volume_da(
+    def to_volume_ds(
         self, dataset: xr.Dataset, result_var: Parameter, width=600, height=600
     ) -> Optional[pn.pane.Plotly]:
         """Given a benchCfg generate a 3D surface plot
