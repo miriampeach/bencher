@@ -91,7 +91,7 @@ class BenchResult(
         return [
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
             BarResult.to_bar,
-            BoxWhiskerResult.to_boxplot,
+            BoxWhiskerResult.to_plot,
             # ViolinResult.to_violin,
             # ScatterJitterResult.to_scatter_jitter,
             CurveResult.to_curve,

@@ -26,7 +26,7 @@ class BoxWhiskerResult(DistributionResult):
     - Outliers as individual points beyond the whiskers
     """
 
-    def to_boxplot(
+    def to_plot(
         self, result_var: Optional[Parameter] = None, override: bool = True, **kwargs: Any
     ) -> Optional[pn.panel]:
         """Generates a box and whisker plot from benchmark data.
