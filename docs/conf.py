@@ -56,16 +56,16 @@ nbsite_gallery_conf = {
         "reference": {
             "title": "Reference Gallery",
             "intro": ("This shows examples of what various dimensionalities of sweep look like."),
-            "sections": {
-                "inputs_0_float": {"title": "0 Floating Point Variables"},
-                # "0D": {},
-                "1D": {},
-                "2D": {},
-                "Levels": {},
-                "examples": {},
-                "Meta": {},
-                "Media": {},
-            },
+            "sections": [
+                {"path": "inputs_0_float", "title": "0 Floating Point Variables"},
+                {"path": "0D", "title": "0D"},
+                {"path": "1D", "title": "1D"},
+                {"path": "2D", "title": "2D"},
+                {"path": "Levels", "title": "Levels"},
+                {"path": "examples", "title": "Examples"},
+                {"path": "Meta", "title": "Meta"},
+                {"path": "Media", "title": "Media"},
+            ],
             "skip_rst_notebook_directive": True,
         }
     },
