@@ -12,16 +12,16 @@ random.seed(0)
 
 class PythonOperations1CatBenchmark(bch.ParametrizedSweep):
     """Example class for benchmarking different Python data structures using 1 categorical variable.
-    
+
     This class demonstrates how to structure a benchmark with a single input parameter
     and multiple output metrics. It uses simulated performance data that follows realistic
     patterns while being deterministic and reproducible.
     """
 
     data_structure = bch.StringSweep(["list", "dict"], doc="Type of data structure to operate on")
-    
+
     # Using fixed read operation and medium size data
-    
+
     execution_time = bch.ResultVar(units="ms", doc="Execution time in milliseconds")
     memory_peak = bch.ResultVar(units="KB", doc="Peak memory usage in kilobytes")
 
@@ -40,7 +40,7 @@ class PythonOperations1CatBenchmark(bch.ParametrizedSweep):
         # Base values (for read operation on medium data)
         base_time = 35.0  # ms (medium size, read operation base)
         base_memory = 800.0  # KB (medium size, read operation base)
-        
+
         # Adjust for data structure (lists are generally faster but use more memory)
         if self.data_structure == "list":
             time_factor = 0.8
@@ -48,7 +48,7 @@ class PythonOperations1CatBenchmark(bch.ParametrizedSweep):
         else:  # dict
             time_factor = 1.2
             memory_factor = 0.9
-            
+
         # Calculate final metrics with significant variance to show differences
         self.execution_time = base_time * time_factor * random.uniform(0.80, 1.20)
         self.memory_peak = base_memory * memory_factor * random.uniform(0.85, 1.15)
@@ -60,7 +60,7 @@ def example_1_cat_in_2_out(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example demonstrates benchmarking with 1 categorical variable and multiple output metrics.
-    
+
     It creates a synthetic benchmark that simulates performance characteristics of different
     Python data structures (list vs dict) using a fixed read operation and medium data size.
     The benchmark produces realistic patterns of execution time and memory usage without
@@ -89,7 +89,7 @@ def example_1_cat_in_2_out(
         - However, lists consume more memory than dictionaries
         - All tests were performed with read operations on medium-sized datasets
         - Note that variance in the results simulates real-world measurement fluctuations
-        """
+        """,
     )
     return bench
 
