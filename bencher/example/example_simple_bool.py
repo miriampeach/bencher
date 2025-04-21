@@ -23,7 +23,7 @@ def example_1D_bool(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         description=example_1D_bool.__doc__,
         run_cfg=run_cfg,
     )
-    bench.report.append(res.to_bar())
+    bench.add(bch.BarResult)
 
     return bench
 
