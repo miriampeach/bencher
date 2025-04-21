@@ -20,7 +20,9 @@ class BarResult(HoloviewResult):
     between different configurations or categories.
     """
 
-    def to_plot(self, result_var: Parameter = None, override: bool = True, **kwargs):
+    def to_plot(
+        self, result_var: Parameter = None, override: bool = True, **kwargs
+    ) -> Optional[pn.panel]:
         return self.to_bar(result_var, override, **kwargs)
 
     def to_bar(

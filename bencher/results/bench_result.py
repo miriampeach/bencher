@@ -61,6 +61,8 @@ class BenchResult(
     #         BenchResult: The current instance of the benchmark result
     #     """
     #     return result_type(self.bench_cfg).to_plot(self)
+    # def to_plot(self, result_var: Parameter = None, override: bool = True, **kwargs):
+    #     return self.to_bar(result_var, override, **kwargs)
 
     @staticmethod
     def default_plot_callbacks() -> List[callable]:
