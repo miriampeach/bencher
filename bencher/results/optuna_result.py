@@ -65,8 +65,6 @@ class OptunaResult:
         self.plot_inputs = []
         self.dataset_list = []
 
-        print("OPTUNA RESULT INIT")
-
         # self.width=600/
         # self.height=600
 
