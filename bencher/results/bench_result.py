@@ -77,6 +77,7 @@ class BenchResult(
         result_instance = result_type(self.bench_cfg)
         result_instance.ds = self.ds
         result_instance.plt_cnt_cfg = self.plt_cnt_cfg
+        result_instance.dataset_list = self.dataset_list
         return result_instance.to_plot(result_var=result_var, override=override, **kwargs)
 
     @staticmethod
