@@ -46,7 +46,9 @@ from .results.composable_container.composable_container_video import (
 from bencher.results.holoview_results.distribution_result.box_whisker_result import BoxWhiskerResult
 from bencher.results.holoview_results.distribution_result.violin_result import ViolinResult
 from bencher.results.holoview_results.scatter_result import ScatterResult
-from bencher.results.holoview_results.distribution_result.scatter_jitter_result import ScatterJitterResult
+from bencher.results.holoview_results.distribution_result.scatter_jitter_result import (
+    ScatterJitterResult,
+)
 from bencher.results.holoview_results.bar_result import BarResult
 from bencher.results.holoview_results.line_result import LineResult
 from bencher.results.holoview_results.curve_result import CurveResult

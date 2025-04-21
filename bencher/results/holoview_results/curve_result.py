@@ -20,16 +20,18 @@ class CurveResult(HoloviewResult):
     include multiple repetitions.
     """
 
-    def to_plot(self, result_var: Parameter = None, override: bool = True, **kwargs) -> Optional[hv.Curve]:
+    def to_plot(
+        self, result_var: Parameter = None, override: bool = True, **kwargs
+    ) -> Optional[hv.Curve]:
         """Generates a curve plot from benchmark data.
-        
+
         This is a convenience method that calls to_curve() with the same parameters.
-        
+
         Args:
             result_var (Parameter, optional): The result variable to plot. If None, uses the default.
             override (bool, optional): Whether to override filter restrictions. Defaults to True.
             **kwargs: Additional keyword arguments passed to the plot rendering.
-            
+
         Returns:
             Optional[hv.Curve]: A curve plot if data is appropriate,
                               otherwise returns filter match results.

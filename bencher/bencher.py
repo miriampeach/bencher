@@ -1197,7 +1197,7 @@ class Bench(BenchPlotServer):
         Returns:
             BenchResult: The current instance of the benchmark result
         """
-        result_instance =result_type.from_existing(self.get_result())
+        result_instance = result_type.from_existing(self.get_result())
         return result_instance.to_plot(result_var=result_var, override=override, **kwargs)
 
     def add(

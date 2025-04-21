@@ -37,9 +37,9 @@ class HeatmapResult(HoloviewResult):
         **kwargs,
     ) -> Optional[pn.panel]:
         """Generates a heatmap visualization from benchmark data.
-        
+
         This is a convenience method that calls to_heatmap() with the same parameters.
-        
+
         Args:
             result_var (Parameter, optional): The result variable to plot. If None, uses the default.
             tap_var: Variables to display when tapping on heatmap points.
@@ -49,7 +49,7 @@ class HeatmapResult(HoloviewResult):
             override (bool, optional): Whether to override filter restrictions. Defaults to True.
             use_tap (bool, optional): Whether to enable tap functionality.
             **kwargs: Additional keyword arguments passed to the plot rendering.
-            
+
         Returns:
             Optional[pn.panel]: A panel containing the heatmap if data is appropriate,
                               otherwise returns filter match results.
@@ -62,7 +62,7 @@ class HeatmapResult(HoloviewResult):
             target_dimension=target_dimension,
             override=override,
             use_tap=use_tap,
-            **kwargs
+            **kwargs,
         )
 
     def to_heatmap(

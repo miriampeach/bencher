@@ -36,9 +36,9 @@ class LineResult(HoloviewResult):
         **kwargs,
     ) -> Optional[pn.panel]:
         """Generates a line plot from benchmark data.
-        
+
         This is a convenience method that calls to_line() with the same parameters.
-        
+
         Args:
             result_var (Parameter, optional): The result variable to plot. If None, uses the default.
             tap_var: Variables to display when tapping on line plot points.
@@ -47,7 +47,7 @@ class LineResult(HoloviewResult):
             override (bool, optional): Whether to override filter restrictions. Defaults to True.
             use_tap (bool, optional): Whether to enable tap functionality.
             **kwargs: Additional keyword arguments passed to the plot rendering.
-            
+
         Returns:
             Optional[pn.panel]: A panel containing the line plot if data is appropriate,
                               otherwise returns filter match results.
@@ -59,7 +59,7 @@ class LineResult(HoloviewResult):
             target_dimension=target_dimension,
             override=override,
             use_tap=use_tap,
-            **kwargs
+            **kwargs,
         )
 
     def to_line(
