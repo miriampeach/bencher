@@ -25,6 +25,21 @@ class ScatterResult(HoloviewResult):
     - to_scatter: Creates standard scatter plots that can be grouped by categorical variables
     """
 
+    def to_plot(self, override: bool = True, **kwargs) -> Optional[pn.panel]:
+        """Creates a standard scatter plot from benchmark data.
+
+        This is a convenience method that calls to_scatter() with the same parameters.
+
+        Args:
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            **kwargs: Additional keyword arguments passed to the scatter plot options.
+
+        Returns:
+            Optional[pn.panel]: A panel containing the scatter plot if data is appropriate,
+                              otherwise returns filter match results.
+        """
+        return self.to_scatter(override=override, **kwargs)
+
     def to_scatter(self, override: bool = True, **kwargs) -> Optional[pn.panel]:
         """Creates a standard scatter plot from benchmark data.
 

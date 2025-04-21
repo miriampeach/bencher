@@ -8,7 +8,7 @@ from bencher.variables.results import ResultImage
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, int_to_col, color_tuple_to_255
 from bencher.video_writer import VideoWriter
-from bencher.results.video_result import VideoControls
+from bencher.results.video_controls import VideoControls
 from bencher.results.composable_container.composable_container_video import (
     ComposableContainerVideo,
     ComposeType,

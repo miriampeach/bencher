@@ -13,7 +13,7 @@ from bencher.utils import (
     get_nearest_coords,
     listify,
 )
-from bencher.results.panel_result import PanelResult
+from bencher.results.video_result import VideoResult
 from bencher.results.bench_result_base import ReduceType
 
 from bencher.variables.results import ResultVar, ResultImage, ResultVideo
@@ -24,7 +24,7 @@ hv.extension("bokeh", "plotly")
 use_tap = True
 
 
-class HoloviewResult(PanelResult):
+class HoloviewResult(VideoResult):
     @staticmethod
     def set_default_opts(width: int = 600, height: int = 600) -> dict:
         """Set default options for HoloViews visualizations.
@@ -50,7 +50,7 @@ class HoloviewResult(PanelResult):
         )
         return width_height
 
-    def to(self, hv_type: type, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
+    def to_hv_type(self, hv_type: type, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         """Convert the dataset to a specific HoloViews visualization type.
 
         Args:
@@ -241,8 +241,8 @@ class HoloviewResult(PanelResult):
         """
         ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Points)
-        if reduce:
-            pt *= ds.to(hv.ErrorBars)
+        # if reduce:
+        # pt *= ds.to(hv.ErrorBars)
         return pt
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
@@ -341,52 +341,6 @@ class HoloviewResult(PanelResult):
         if len(inputs) > 2:
             inputs = inputs[:2]
         return self.to_holomap().grid(inputs)
-
-    def to_table(self) -> hv.Table:
-        """Convert the dataset to a Table visualization.
-
-        Returns:
-            hv.Table: A HoloViews Table object.
-        """
-        return self.to(hv.Table, ReduceType.SQUEEZE)
-
-    def to_tabulator(self, **kwargs) -> pn.widgets.Tabulator:
-        """Create an interactive table visualization of the data.
-
-        Passes the data to the panel Tabulator type to display an interactive table.
-        See https://panel.holoviz.org/reference/widgets/Tabulator.html for extra options.
-
-        Args:
-            **kwargs: Additional parameters to pass to the Tabulator constructor.
-
-        Returns:
-            pn.widgets.Tabulator: An interactive table widget.
-        """
-        return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
-
-    # def plot_scatter2D_hv(self, rv: ParametrizedSweep) -> pn.pane.Plotly:
-    # import plotly.express as px
-
-    #     """Given a benchCfg generate a 2D scatter plot
-
-    #     Args:
-    #         bench_cfg (BenchCfg): description of benchmark
-    #         rv (ParametrizedSweep): result variable to plot
-
-    #     Returns:
-    #         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
-    #     """
-
-    #     # bench_cfg = wrap_long_time_labels(bench_cfg)
-    #     self.ds.drop_vars("repeat")
-
-    #     df = self.to_pandas()
-
-    #     names = rv.index_names()
-
-    #     return px.scatter(
-    #         df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram"
-    #     )
 
 
 HoloviewResult.set_default_opts()

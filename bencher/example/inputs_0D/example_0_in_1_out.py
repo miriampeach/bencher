@@ -38,7 +38,7 @@ def example_0_in_1_out(
     bench = SimpleFloat0D().to_bench(run_cfg, report)
     bench.plot_sweep()
 
-    bench.report.append(bench.get_result().to_table())
+    bench.add(bch.TableResult)
     return bench
 
 

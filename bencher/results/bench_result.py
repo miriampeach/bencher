@@ -1,30 +1,33 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Optional, Any
 import panel as pn
+from param import Parameter
 
 from bencher.results.bench_result_base import EmptyContainer
 from bencher.results.video_summary import VideoSummaryResult
-from bencher.results.panel_result import PanelResult
-from bencher.results.plotly_result import PlotlyResult
+from bencher.results.video_result import VideoResult
+from bencher.results.volume_result import VolumeResult
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 # Updated imports for distribution result classes
-from bencher.results.holoview_results.distribution_result import BoxWhiskerResult
-from bencher.results.holoview_results.distribution_result import ViolinResult
+from bencher.results.holoview_results.distribution_result.box_whisker_result import BoxWhiskerResult
+from bencher.results.holoview_results.distribution_result.violin_result import ViolinResult
 from bencher.results.holoview_results.scatter_result import ScatterResult
-from bencher.results.holoview_results.distribution_result import ScatterJitterResult
+from bencher.results.holoview_results.distribution_result.scatter_jitter_result import (
+    ScatterJitterResult,
+)
 from bencher.results.holoview_results.bar_result import BarResult
 from bencher.results.holoview_results.line_result import LineResult
 from bencher.results.holoview_results.curve_result import CurveResult
 from bencher.results.holoview_results.heatmap_result import HeatmapResult
 from bencher.results.holoview_results.surface_result import SurfaceResult
-from bencher.results.hvplot_result import HvplotResult
+from bencher.results.histogram_result import HistogramResult
 from bencher.results.dataset_result import DataSetResult
 from bencher.utils import listify
 
 
 class BenchResult(
-    PlotlyResult,
+    VolumeResult,
     BoxWhiskerResult,
     ViolinResult,
     ScatterJitterResult,
@@ -35,7 +38,7 @@ class BenchResult(
     CurveResult,
     SurfaceResult,
     HoloviewResult,
-    HvplotResult,
+    HistogramResult,
     VideoSummaryResult,
     DataSetResult,
 ):  # noqa pylint: disable=too-many-ancestors
@@ -47,9 +50,35 @@ class BenchResult(
         Args:
             bench_cfg: The benchmark configuration object containing settings and result data
         """
-        PlotlyResult.__init__(self, bench_cfg)
+        VolumeResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
         # DataSetResult.__init__(self.bench_cfg)
+
+    @classmethod
+    def from_existing(cls, original: BenchResult) -> BenchResult:
+        new_instance = cls(original.bench_cfg)
+        new_instance.ds = original.ds
+        new_instance.bench_cfg = original.bench_cfg
+        new_instance.plt_cnt_cfg = original.plt_cnt_cfg
+        return new_instance
+
+    def to(
+        self,
+        result_type: BenchResult,
+        result_var: Optional[Parameter] = None,
+        override: bool = True,
+        **kwargs: Any,
+    ) -> BenchResult:
+        """Return the current instance of BenchResult.
+
+        Returns:
+            BenchResult: The current instance of the benchmark result
+        """
+        result_instance = result_type(self.bench_cfg)
+        result_instance.ds = self.ds
+        result_instance.plt_cnt_cfg = self.plt_cnt_cfg
+        result_instance.dataset_list = self.dataset_list
+        return result_instance.to_plot(result_var=result_var, override=override, **kwargs)
 
     @staticmethod
     def default_plot_callbacks() -> List[callable]:
@@ -63,17 +92,17 @@ class BenchResult(
         """
         return [
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
-            BarResult.to_bar,
-            BoxWhiskerResult.to_boxplot,
+            BarResult.to_plot,
+            BoxWhiskerResult.to_plot,
             # ViolinResult.to_violin,
-            ScatterJitterResult.to_scatter_jitter,
-            CurveResult.to_curve,
-            LineResult.to_line,
-            HeatmapResult.to_heatmap,
-            HvplotResult.to_histogram,
-            PlotlyResult.to_volume,
+            ScatterJitterResult.to_plot,
+            CurveResult.to_plot,
+            LineResult.to_plot,
+            HeatmapResult.to_plot,
+            HistogramResult.to_plot,
+            VolumeResult.to_plot,
             # PanelResult.to_video,
-            PanelResult.to_panes,
+            VideoResult.to_panes,
         ]
 
     @staticmethod
@@ -83,7 +112,7 @@ class BenchResult(
         Returns:
             List[callable]: A list of Plotly-based visualization callback functions
         """
-        return [SurfaceResult.to_surface, PlotlyResult.to_volume]
+        return [SurfaceResult.to_surface, VolumeResult.to_volume]
 
     def plot(self) -> pn.panel:
         """Plots the benchresult using the plot callbacks defined by the bench run.
