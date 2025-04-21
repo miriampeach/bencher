@@ -22,6 +22,24 @@ class SurfaceResult(HoloviewResult):
     when benchmark runs include multiple repetitions.
     """
 
+    def to_plot(
+        self, result_var: Parameter = None, override: bool = True, **kwargs
+    ) -> Optional[pn.pane.Pane]:
+        """Generates a 3D surface plot from benchmark data.
+
+        This is a convenience method that calls to_surface() with the same parameters.
+
+        Args:
+            result_var (Parameter, optional): The result variable to plot. If None, uses the default.
+            override (bool, optional): Whether to override filter restrictions. Defaults to True.
+            **kwargs: Additional keyword arguments passed to the plot rendering.
+
+        Returns:
+            Optional[pn.pane.Pane]: A panel containing the surface plot if data is appropriate,
+                                   otherwise returns filter match results.
+        """
+        return self.to_surface(result_var=result_var, override=override, **kwargs)
+
     def to_surface(
         self, result_var: Parameter = None, override: bool = True, **kwargs
     ) -> Optional[pn.pane.Pane]:
