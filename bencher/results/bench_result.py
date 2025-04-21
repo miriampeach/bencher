@@ -53,16 +53,6 @@ class BenchResult(
         HoloviewResult.__init__(self, bench_cfg)
         # DataSetResult.__init__(self.bench_cfg)
 
-    # def to_res(self, result_type: BenchResult) -> BenchResult:
-    #     # return
-    #     """Return the current instance of BenchResult.
-
-    #     Returns:
-    #         BenchResult: The current instance of the benchmark result
-    #     """
-    #     return result_type(self.bench_cfg).to_plot(self)
-    # def to_plot(self, result_var: Parameter = None, override: bool = True, **kwargs):
-    #     return self.to_bar(result_var, override, **kwargs)
     @classmethod
     def from_existing(cls, original: BenchResult) -> BenchResult:
         new_instance = cls(original.bench_cfg)
@@ -70,6 +60,23 @@ class BenchResult(
         new_instance.bench_cfg = original.bench_cfg
         new_instance.plt_cnt_cfg = original.plt_cnt_cfg
         return new_instance
+
+    def to(
+        self,
+        result_type: BenchResult,
+        result_var: Optional[Parameter] = None,
+        override: bool = True,
+        **kwargs: Any,
+    ) -> BenchResult:
+        """Return the current instance of BenchResult.
+
+        Returns:
+            BenchResult: The current instance of the benchmark result
+        """
+        result_instance = result_type(self.bench_cfg)
+        result_instance.ds = self.ds
+        result_instance.plt_cnt_cfg = self.plt_cnt_cfg
+        return result_instance.to_plot(result_var=result_var, override=override, **kwargs)
 
     @staticmethod
     def default_plot_callbacks() -> List[callable]:

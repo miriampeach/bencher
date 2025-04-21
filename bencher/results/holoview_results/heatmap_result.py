@@ -279,7 +279,7 @@ class HeatmapResult(HoloviewResult):
 
             color_label = f"{z.name} [{z.units}]"
 
-            return self.to(hv.HeatMap, reduce).opts(clabel=color_label, **kwargs)
+            return self.to_hv_type(hv.HeatMap, reduce).opts(clabel=color_label, **kwargs)
         return matches_res.to_panel()
 
     def to_heatmap_tap(

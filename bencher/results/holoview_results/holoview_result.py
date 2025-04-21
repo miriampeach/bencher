@@ -50,7 +50,7 @@ class HoloviewResult(PanelResult):
         )
         return width_height
 
-    def to(self, hv_type: type, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
+    def to_hv_type(self, hv_type: type, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         """Convert the dataset to a specific HoloViews visualization type.
 
         Args:
@@ -348,7 +348,7 @@ class HoloviewResult(PanelResult):
         Returns:
             hv.Table: A HoloViews Table object.
         """
-        return self.to(hv.Table, ReduceType.SQUEEZE)
+        return self.to_hv_type(hv.Table, ReduceType.SQUEEZE)
 
     def to_tabulator(self, **kwargs) -> pn.widgets.Tabulator:
         """Create an interactive table visualization of the data.
