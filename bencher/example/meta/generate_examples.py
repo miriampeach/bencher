@@ -42,6 +42,27 @@ bench.get_result().to_auto_plots()
 
 
 if __name__ == "__main__":
+    # Examples with different numbers of categorical variables in increasing order
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_0_float/example_0_cat_in_2_out.py",
+        "inputs_0_float",
+        repeats=100,
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_0_float/example_1_cat_in_2_out.py",
+        "inputs_0_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_0_float/example_2_cat_in_2_out.py",
+        "inputs_0_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_0_float/example_3_cat_in_2_out.py",
+        "inputs_0_float",
+    )
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D", repeats=100
     )
@@ -50,9 +71,11 @@ if __name__ == "__main__":
         "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_2_out.py", "0D", repeats=100
     )
 
+    # Other 1D examples
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_1D/example_1_int_in_1_out.py", "1D"
     )
+
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_1D/example_1_int_in_2_out.py", "1D"
     )
@@ -63,10 +86,6 @@ if __name__ == "__main__":
 
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_1D/example_1_cat_in_2_out_repeats.py", "1D"
-    )
-
-    convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_1D/example_3_cat_in_2_out.py", "3D"
     )
 
     convert_example_to_jupyter_notebook(
