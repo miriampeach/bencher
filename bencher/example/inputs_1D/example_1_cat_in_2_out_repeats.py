@@ -60,13 +60,17 @@ def example_1_cat_in_2_out_repeats(
         run_cfg = bch.BenchRunCfg()
     run_cfg.repeats = 30  # Increased repeats for better statistical significance
     bench = DataStructureBenchmark().to_bench(run_cfg, report)
-    bench.plot_sweep()
+    res = bench.plot_sweep()
     bench.add(bch.BarResult)
     # bench.add(bch.BoxWhiskerResult)
     bench.add(bch.ViolinResult)
     bench.add(bch.ScatterJitterResult)
     bench.add(bch.ScatterJitterResult, jitter=10)
     # bench.add(bch.CurveResult)
+    # bench.report.append(res.to_points())
+    # bench.report.append(res.to_error_bar())
+    bench.add(bch.TableResult)
+    bench.add(bch.TabulatorResult)
     return bench
 
 

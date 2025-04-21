@@ -6,7 +6,7 @@ from param import Parameter
 from bencher.results.bench_result_base import EmptyContainer
 from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.video_result import VideoResult
-from bencher.results.plotly_result import VolumeResult
+from bencher.results.volume_result import VolumeResult
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 # Updated imports for distribution result classes
