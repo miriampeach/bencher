@@ -4,8 +4,8 @@ import panel as pn
 
 from bencher.results.bench_result_base import EmptyContainer
 from bencher.results.video_summary import VideoSummaryResult
-from bencher.results.panel_result import PanelResult
-from bencher.results.plotly_result import PlotlyResult
+from bencher.results.video_result import VideoResult
+from bencher.results.plotly_result import VolumeResult
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 # Updated imports for distribution result classes
@@ -26,7 +26,7 @@ from bencher.utils import listify
 
 
 class BenchResult(
-    PlotlyResult,
+    VolumeResult,
     BoxWhiskerResult,
     ViolinResult,
     ScatterJitterResult,
@@ -49,7 +49,7 @@ class BenchResult(
         Args:
             bench_cfg: The benchmark configuration object containing settings and result data
         """
-        PlotlyResult.__init__(self, bench_cfg)
+        VolumeResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
         # DataSetResult.__init__(self.bench_cfg)
 
@@ -90,17 +90,17 @@ class BenchResult(
         """
         return [
             # VideoSummaryResult.to_video_summary, #quite expensive so not turned on by default
-            BarResult.to_bar,
+            BarResult.to_plot,
             BoxWhiskerResult.to_plot,
             # ViolinResult.to_violin,
             # ScatterJitterResult.to_scatter_jitter,
-            CurveResult.to_curve,
-            LineResult.to_line,
-            HeatmapResult.to_heatmap,
+            CurveResult.to_plot,
+            LineResult.to_plot,
+            HeatmapResult.to_plot,
             HistogramResult.to_plot,
-            PlotlyResult.to_volume,
+            VolumeResult.to_plot,
             # PanelResult.to_video,
-            PanelResult.to_panes,
+            VideoResult.to_panes,
         ]
 
     @staticmethod
@@ -110,7 +110,7 @@ class BenchResult(
         Returns:
             List[callable]: A list of Plotly-based visualization callback functions
         """
-        return [SurfaceResult.to_surface, PlotlyResult.to_volume]
+        return [SurfaceResult.to_surface, VolumeResult.to_volume]
 
     def plot(self) -> pn.panel:
         """Plots the benchresult using the plot callbacks defined by the bench run.

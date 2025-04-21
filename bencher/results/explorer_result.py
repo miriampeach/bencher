@@ -6,15 +6,15 @@ import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import hvplot.pandas  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
-from bencher.results.panel_result import PanelResult
+from bencher.results.video_result import VideoResult
 from bencher.results.bench_result_base import ReduceType
 
 from bencher.plotting.plot_filter import VarRange
 from bencher.variables.results import ResultVar
 
 
-class ExplorerResult(PanelResult):
-    def to_plot(self,**kwargs) -> pn.pane.Pane:
+class ExplorerResult(VideoResult):
+    def to_plot(self, **kwargs) -> pn.pane.Pane:
         """Produces a hvplot explorer instance to explore the generated dataset
         see: https://hvplot.holoviz.org/getting_started/explorer.html
 

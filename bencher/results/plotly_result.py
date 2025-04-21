@@ -1,17 +1,37 @@
+from typing import Optional, Any
+
+import xarray as xr
+from param import Parameter
 import panel as pn
 import plotly.graph_objs as go
-from typing import Optional
-import xarray as xr
-
-from param import Parameter
 
 from bencher.plotting.plot_filter import VarRange
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultVar
 
 
-class PlotlyResult(BenchResultBase):
-    def to_volume(self, result_var: Parameter = None, **kwargs):
+class VolumeResult(BenchResultBase):
+    def to_plot(
+        self, result_var: Optional[Parameter] = None, override: bool = True, **kwargs: Any
+    ) -> Optional[pn.panel]:
+        """Generates a 3d volume plot from benchmark data.
+
+        Args:
+            result_var (Optional[Parameter]): The result variable to plot. If None, uses the default.
+            override (bool): Whether to override filter restrictions. Defaults to True.
+            **kwargs (Any): Additional keyword arguments passed to the plot rendering.
+
+        Returns:
+            Optional[pn.panel]: A panel containing the volume plot if data is appropriate,
+            otherwise returns filter match results.
+        """
+        return self.to_volume(
+            result_var=result_var,
+            override=override,
+            **kwargs,
+        )
+
+    def to_volume(self, result_var: Parameter = None, override: bool = True, **kwargs):
         return self.filter(
             self.to_volume_da,
             float_range=VarRange(3, 3),
@@ -20,6 +40,7 @@ class PlotlyResult(BenchResultBase):
             target_dimension=3,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 

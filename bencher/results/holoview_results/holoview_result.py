@@ -13,7 +13,7 @@ from bencher.utils import (
     get_nearest_coords,
     listify,
 )
-from bencher.results.panel_result import PanelResult
+from bencher.results.video_result import VideoResult
 from bencher.results.bench_result_base import ReduceType
 
 from bencher.variables.results import ResultVar, ResultImage, ResultVideo
@@ -24,7 +24,7 @@ hv.extension("bokeh", "plotly")
 use_tap = True
 
 
-class HoloviewResult(PanelResult):
+class HoloviewResult(VideoResult):
     @staticmethod
     def set_default_opts(width: int = 600, height: int = 600) -> dict:
         """Set default options for HoloViews visualizations.

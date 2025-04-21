@@ -83,7 +83,7 @@ from .plotting.plot_filter import VarRange, PlotFilter
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 from .results.bench_result import BenchResult
-from .results.panel_result import PanelResult
+from .results.video_result import VideoResult
 from .results.holoview_results.holoview_result import ReduceType, HoloviewResult
 from .bench_report import BenchReport, GithubPagesCfg
 from .job import Executors
