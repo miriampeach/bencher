@@ -1,12 +1,6 @@
 from __future__ import annotations
-from typing import Optional
 import panel as pn
-from param import Parameter
-import xarray as xr
 
-from bencher.results.bench_result_base import ReduceType
-from bencher.plotting.plot_filter import VarRange
-from bencher.variables.results import ResultVar
 from bencher.results.holoview_results.holoview_result import HoloviewResult
 
 
