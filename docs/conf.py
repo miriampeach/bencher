@@ -50,8 +50,6 @@ numpydoc_show_class_members = False
 autosummary_generate = True
 
 nbsite_gallery_conf = {
-    # "examples_dir": "examples",
-    # "galleries": {},
     "default_extensions": ["*.ipynb", "*.py"],
     "examples_dir": ".",
     "galleries": {
@@ -59,13 +57,16 @@ nbsite_gallery_conf = {
             "title": "Reference Gallery",
             "intro": ("This shows examples of what various dimensionalities of sweep look like."),
             "sections": [
-                "0D",
-                "1D",
-                "2D",
-                "Levels",
-                "examples",
-                "Meta",
-                "Media",
+                {
+                    "path": "inputs_0_float",
+                    "title": "0 Continuous Variables, 0-3 Categorical Variables",
+                },
+                {"path": "1D", "title": "1D"},
+                {"path": "2D", "title": "2D"},
+                {"path": "Levels", "title": "Levels"},
+                {"path": "examples", "title": "Examples"},
+                {"path": "Meta", "title": "Meta"},
+                {"path": "Media", "title": "Media"},
             ],
             "skip_rst_notebook_directive": True,
         }
