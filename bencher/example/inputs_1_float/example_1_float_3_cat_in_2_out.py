@@ -15,7 +15,7 @@ class AlgorithmBenchmark(bch.ParametrizedSweep):
     """Example class for benchmarking algorithm performance with various parameters.
 
     This class demonstrates how to structure a benchmark with one float parameter and
-    three categorical parameters, producing multiple output metrics. It uses simulated 
+    three categorical parameters, producing multiple output metrics. It uses simulated
     performance data that follows realistic patterns while being deterministic.
     """
 

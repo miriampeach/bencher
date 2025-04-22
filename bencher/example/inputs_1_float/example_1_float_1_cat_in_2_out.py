@@ -15,7 +15,7 @@ class Algorithm1CatBenchmark(bch.ParametrizedSweep):
     """Example class for benchmarking algorithm performance with fewer parameters.
 
     This class demonstrates how to structure a benchmark with one float parameter and
-    one categorical parameter, producing multiple output metrics. It uses simulated 
+    one categorical parameter, producing multiple output metrics. It uses simulated
     performance data that follows realistic patterns while being deterministic.
     """
 
@@ -88,8 +88,8 @@ def example_1_float_1_cat_in_2_out(
     """This example demonstrates benchmarking with 1 float and 1 categorical input.
 
     It creates a synthetic benchmark that simulates performance characteristics of different
-    algorithm implementations, varying problem size (float) and algorithm type. The benchmark 
-    uses fixed "array" data structure and "basic" optimization level, producing realistic 
+    algorithm implementations, varying problem size (float) and algorithm type. The benchmark
+    uses fixed "array" data structure and "basic" optimization level, producing realistic
     patterns of execution time and memory usage without actually executing real algorithms.
 
     Args:
