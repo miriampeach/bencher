@@ -57,10 +57,9 @@ nbsite_gallery_conf = {
             "title": "Reference Gallery",
             "intro": ("This shows examples of what various dimensionalities of sweep look like."),
             "sections": [
-                {"path": "0D", "title": "0 Input Variables"},
                 {
                     "path": "inputs_0_float",
-                    "title": "0 Continuous Variables, 1-3 Categorical Variables",
+                    "title": "0 Continuous Variables, 0-3 Categorical Variables",
                 },
                 {"path": "1D", "title": "1D"},
                 {"path": "2D", "title": "2D"},
