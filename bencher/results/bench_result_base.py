@@ -111,9 +111,7 @@ class BenchResultBase:
             pd.DataFrame: The xarray results array as a pandas dataframe
         """
         ds = self.to_xarray().to_dataframe()
-        if reset_index:
-            return ds.reset_index()
-        return ds
+        return ds.reset_index() if reset_index else ds
 
     def wrap_long_time_labels(self, bench_cfg):
         """Takes a benchCfg and wraps any index labels that are too long to be plotted easily
