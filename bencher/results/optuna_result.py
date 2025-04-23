@@ -27,7 +27,7 @@ from bencher.optuna_conversions import (
 
 
 class OptunaResult(BenchResultBase):
-    def to_optuna_plots(self) -> List[pn.pane.panel]:
+    def to_optuna_plots(self, **kwargs) -> List[pn.pane.panel]:
         """Create an optuna summary from the benchmark results
 
         Returns:
@@ -211,11 +211,14 @@ class OptunaResult(BenchResultBase):
                             include_dominated_trials=False,
                         )
                     )
+                try:
+                    study_pane.append(param_importance(self.bench_cfg, study))
+                    param_str.append(
+                        f"    Number of trials on the Pareto front: {len(study.best_trials)}"
+                    )
+                except Exception as e:
+                    study_pane.append(f"Error generating parameter importance: {str(e)}")
 
-                study_pane.append(param_importance(self.bench_cfg, study))
-                param_str.append(
-                    f"    Number of trials on the Pareto front: {len(study.best_trials)}"
-                )
                 for t in study.best_trials:
                     param_str.extend(summarise_trial(t, self.bench_cfg))
 
