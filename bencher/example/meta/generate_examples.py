@@ -26,7 +26,8 @@ bench={function_name}
     code_results = """
 from bokeh.io import output_notebook
 output_notebook()
-bench.report.show()
+# bench.get_result().to_auto_plots()
+bench.report
 """
 
     nb["cells"] = [
