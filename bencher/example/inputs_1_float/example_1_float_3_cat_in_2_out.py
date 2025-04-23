@@ -29,7 +29,9 @@ class AlgorithmBenchmark(bch.ParametrizedSweep):
     data_structure = bch.StringSweep(
         ["array", "linked_list"], doc="Underlying data structure to use"
     )
-    optimization_level = bch.StringSweep(["basic", "advanced"], doc="Level of optimization applied")
+    optimization_level = bch.StringSweep(
+        ["none", "basic", "advanced"], doc="Level of optimization applied"
+    )
 
     # Output metrics
     execution_time = bch.ResultVar(units="ms", doc="Execution time in milliseconds")
@@ -70,7 +72,11 @@ class AlgorithmBenchmark(bch.ParametrizedSweep):
             ds_time_factor = 1.3  # Linked lists have slower access
             ds_memory_factor = 0.9  # Linked lists might use less memory
 
-        if self.optimization_level == "basic":
+        # Optimization level factor
+        if self.optimization_level == "none":
+            opt_time_factor = 1.5
+            opt_memory_factor = 0.8
+        elif self.optimization_level == "basic":
             opt_time_factor = 1.0
             opt_memory_factor = 1.0
         else:  # advanced
@@ -79,7 +85,7 @@ class AlgorithmBenchmark(bch.ParametrizedSweep):
 
         # Calculate final metrics with some random variation
         time_multiplier = (
-            algo_time_factor * ds_time_factor * opt_time_factor * random.uniform(0.8, 1.2)
+            algo_time_factor * ds_time_factor * opt_time_factor * random.uniform(0.9, 1.1)
         )
         memory_multiplier = (
             algo_memory_factor * ds_memory_factor * opt_memory_factor * random.uniform(0.95, 1.05)
