@@ -61,7 +61,7 @@ class Algorithm0CatBenchmark(bch.ParametrizedSweep):
 
         # Calculate final metrics with some random variation
         time_multiplier = (
-            algo_time_factor * ds_time_factor * opt_time_factor * random.uniform(0.9, 1.1)
+            algo_time_factor * ds_time_factor * opt_time_factor * random.uniform(0.8, 1.2)
         )
         memory_multiplier = (
             algo_memory_factor * ds_memory_factor * opt_memory_factor * random.uniform(0.95, 1.05)
