@@ -211,6 +211,8 @@ class OptunaResult(BenchResultBase):
                             include_dominated_trials=False,
                         )
                     )
+                    study_pane[-1].height = 1000
+                    study_pane[-1].width = 1000
                 try:
                     study_pane.append(param_importance(self.bench_cfg, study))
                     param_str.append(
