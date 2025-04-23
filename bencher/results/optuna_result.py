@@ -106,6 +106,8 @@ class OptunaResult(BenchResultBase):
         # df = self.bench_cfg.ds.mean("repeat").to_dataframe.reset_index()
         # self.bench_cfg.all_vars
         # del self.bench_cfg.meta_vars[1]
+
+        # optuna does not like the nan values so remove them.
         df.dropna(inplace=True)
 
         trials = []
