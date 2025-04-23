@@ -72,7 +72,7 @@ nbsite_gallery_conf = {
                 {"path": "1D", "title": "1D"},
                 {"path": "pareto", "title": "Pareto"},
                 {"path": "2D", "title": "2D"},
-                {"path": "Levels", "title": "Levels"},
+                {"path": "levels", "title": "Levels"},
                 {"path": "examples", "title": "Examples"},
                 {"path": "Meta", "title": "Meta"},
                 {"path": "Media", "title": "Media"},
