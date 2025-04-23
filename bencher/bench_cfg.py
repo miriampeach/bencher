@@ -8,6 +8,7 @@ from typing import List, Optional, Dict, Any, Union, TypeVar
 import param
 import panel as pn
 from datetime import datetime
+from copy import deepcopy
 
 from bencher.variables.sweep_base import hash_sha1, describe_variable
 from bencher.variables.time import TimeSnapshot, TimeEvent
@@ -278,6 +279,9 @@ class BenchRunCfg(BenchPlotSrvCfg):
         )
 
         return BenchRunCfg(**vars(parser.parse_args()))
+
+    def deep(self):
+        return deepcopy(self)
 
 
 class BenchCfg(BenchRunCfg):
