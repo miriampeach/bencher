@@ -22,6 +22,7 @@ from bencher.results.holoview_results.curve_result import CurveResult
 from bencher.results.holoview_results.heatmap_result import HeatmapResult
 from bencher.results.holoview_results.surface_result import SurfaceResult
 from bencher.results.histogram_result import HistogramResult
+from bencher.results.optuna_result import OptunaResult
 from bencher.results.dataset_result import DataSetResult
 from bencher.utils import listify
 
@@ -41,6 +42,7 @@ class BenchResult(
     HistogramResult,
     VideoSummaryResult,
     DataSetResult,
+    OptunaResult,
 ):  # noqa pylint: disable=too-many-ancestors
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
