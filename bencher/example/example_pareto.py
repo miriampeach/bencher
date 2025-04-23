@@ -12,7 +12,6 @@ It shows how to:
 
 import bencher as bch
 import numpy as np
-import optuna
 
 np.random.seed(0)
 
