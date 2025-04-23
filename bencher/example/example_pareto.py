@@ -64,6 +64,10 @@ class EngineeringDesignProblem(bch.ParametrizedSweep):
         performance_variability = 0.15 * base_performance
         self.performance = base_performance + np.random.normal(0, performance_variability)
 
+        # Introduce a 30% chance of failure (e.g., due to manufacturing defects)
+        if np.random.rand() < 0.3:
+            self.performance = np.nan
+
         # Base cost calculation
         base_cost = self.material_quality * 100 + 10 / (self.thickness + 0.01)
 
@@ -71,9 +75,6 @@ class EngineeringDesignProblem(bch.ParametrizedSweep):
         # Manufacturing costs can vary significantly in real-world scenarios
         cost_variability = 0.12 * base_cost
         self.cost = base_cost + np.random.normal(0, cost_variability)
-
-        if np.random.rand() < 0.3:
-            self.cost = np.nan
 
         return self.get_results_values_as_dict()
 
