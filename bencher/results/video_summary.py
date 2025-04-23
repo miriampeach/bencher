@@ -14,6 +14,7 @@ from bencher.results.composable_container.composable_container_video import (
     ComposeType,
     RenderCfg,
 )
+from bencher.results.optuna_result import OptunaResult
 
 
 class VideoSummaryResult(BenchResultBase):

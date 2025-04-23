@@ -5,7 +5,6 @@ from copy import deepcopy
 import numpy as np
 import optuna
 import panel as pn
-from collections import defaultdict
 from textwrap import wrap
 
 import pandas as pd
@@ -18,9 +17,7 @@ from optuna.visualization import (
 )
 from bencher.utils import hmap_canonical_input
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.bench_cfg import BenchCfg
-from bencher.plotting.plt_cnt_cfg import PltCntCfg
-
+from bencher.results.bench_result_base import BenchResultBase, ReduceType
 
 # from bencher.results.bench_result_base import BenchResultBase
 from bencher.optuna_conversions import (
@@ -33,89 +30,7 @@ from bencher.optuna_conversions import (
 )
 
 
-def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
-    """Given a dataarray that contains boolean coordinates, convert them to strings so that holoviews loads the data properly
-
-    Args:
-        dataarray (xr.DataArray): dataarray with boolean coordinates
-
-    Returns:
-        xr.DataArray: dataarray with boolean coordinates converted to strings
-    """
-    bool_coords = {}
-    for c in dataset.coords:
-        if dataset.coords[c].dtype == bool:
-            bool_coords[c] = [str(vals) for vals in dataset.coords[c].values]
-
-    if len(bool_coords) > 0:
-        return dataset.assign_coords(bool_coords)
-    return dataset
-
-
-class OptunaResult:
-    def __init__(self, bench_cfg: BenchCfg) -> None:
-        self.bench_cfg = bench_cfg
-        # self.wrap_long_time_labels(bench_cfg)  # todo remove
-        self.ds = xr.Dataset()
-        self.object_index = []
-        self.hmaps = defaultdict(dict)
-        self.result_hmaps = bench_cfg.result_hmaps
-        self.studies = []
-        self.plt_cnt_cfg = PltCntCfg()
-        self.plot_inputs = []
-        self.dataset_list = []
-
-        # self.width=600/
-        # self.height=600
-
-        #   bench_res.objects.append(rv)
-        # bench_res.reference_index = len(bench_res.objects)
-
-    def post_setup(self):
-        self.plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(self.bench_cfg)
-        self.bench_cfg = self.wrap_long_time_labels(self.bench_cfg)
-        self.ds = convert_dataset_bool_dims_to_str(self.ds)
-
-    def to_xarray(self) -> xr.Dataset:
-        return self.ds
-
-    def setup_object_index(self):
-        self.object_index = []
-
-    def to_pandas(self, reset_index=True) -> pd.DataFrame:
-        """Get the xarray results as a pandas dataframe
-
-        Returns:
-            pd.DataFrame: The xarray results array as a pandas dataframe
-        """
-        ds = self.to_xarray().to_dataframe()
-        if reset_index:
-            return ds.reset_index()
-        return ds
-
-    def wrap_long_time_labels(self, bench_cfg):
-        """Takes a benchCfg and wraps any index labels that are too long to be plotted easily
-
-        Args:
-            bench_cfg (BenchCfg):
-
-        Returns:
-            BenchCfg: updated config with wrapped labels
-        """
-        if bench_cfg.over_time:
-            if self.ds.coords["over_time"].dtype == np.datetime64:
-                # plotly catastrophically fails to plot anything with the default long string representation of time, so convert to a shorter time representation
-                self.ds.coords["over_time"] = [
-                    pd.to_datetime(t).strftime("%d-%m-%y %H-%M-%S")
-                    for t in self.ds.coords["over_time"].values
-                ]
-                # wrap very long time event labels because otherwise the graphs are unreadable
-            if bench_cfg.time_event is not None:
-                self.ds.coords["over_time"] = [
-                    "\n".join(wrap(t, 20)) for t in self.ds.coords["over_time"].values
-                ]
-        return bench_cfg
-
+class OptunaResult(BenchResultBase):
     def to_optuna_plots(self) -> List[pn.pane.panel]:
         """Create an optuna summary from the benchmark results
 
@@ -189,7 +104,8 @@ class OptunaResult:
             # if self.bench_cfg.repeats>1:
             # df = self.bench_cfg.ds.mean("repeat").to_dataframe().reset_index()
             # else:
-            df = self.to_pandas().reset_index()
+            # df = self.to_pandas().reset_index()
+            df = self.to_dataset(reduce=ReduceType.AUTO).to_dataframe().reset_index()
         # df = self.bench_cfg.ds.mean("repeat").to_dataframe.reset_index()
         # self.bench_cfg.all_vars
         # del self.bench_cfg.meta_vars[1]

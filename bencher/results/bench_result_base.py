@@ -14,7 +14,6 @@ from bencher.variables.inputs import with_level
 
 from bencher.variables.results import OptDir
 from copy import deepcopy
-from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import listify
@@ -24,6 +23,13 @@ from bencher.variables.results import ResultReference, ResultDataSet
 from bencher.results.composable_container.composable_container_panel import (
     ComposableContainerPanel,
 )
+
+from collections import defaultdict
+
+import pandas as pd
+
+from bencher.bench_cfg import BenchCfg
+from bencher.plotting.plt_cnt_cfg import PltCntCfg
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -52,7 +58,89 @@ class EmptyContainer:
         return self.pane if len(self.pane) > 0 else None
 
 
-class BenchResultBase(OptunaResult):
+def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
+    """Given a dataarray that contains boolean coordinates, convert them to strings so that holoviews loads the data properly
+
+    Args:
+        dataarray (xr.DataArray): dataarray with boolean coordinates
+
+    Returns:
+        xr.DataArray: dataarray with boolean coordinates converted to strings
+    """
+    bool_coords = {}
+    for c in dataset.coords:
+        if dataset.coords[c].dtype == bool:
+            bool_coords[c] = [str(vals) for vals in dataset.coords[c].values]
+
+    if len(bool_coords) > 0:
+        return dataset.assign_coords(bool_coords)
+    return dataset
+
+
+class BenchResultBase:
+    def __init__(self, bench_cfg: BenchCfg) -> None:
+        self.bench_cfg = bench_cfg
+        # self.wrap_long_time_labels(bench_cfg)  # todo remove
+        self.ds = xr.Dataset()
+        self.object_index = []
+        self.hmaps = defaultdict(dict)
+        self.result_hmaps = bench_cfg.result_hmaps
+        self.studies = []
+        self.plt_cnt_cfg = PltCntCfg()
+        self.plot_inputs = []
+        self.dataset_list = []
+
+        # self.width=600/
+        # self.height=600
+
+        #   bench_res.objects.append(rv)
+        # bench_res.reference_index = len(bench_res.objects)
+
+    def to_xarray(self) -> xr.Dataset:
+        return self.ds
+
+    def setup_object_index(self):
+        self.object_index = []
+
+    def to_pandas(self, reset_index=True) -> pd.DataFrame:
+        """Get the xarray results as a pandas dataframe
+
+        Returns:
+            pd.DataFrame: The xarray results array as a pandas dataframe
+        """
+        ds = self.to_xarray().to_dataframe()
+        if reset_index:
+            return ds.reset_index()
+        return ds
+
+    def wrap_long_time_labels(self, bench_cfg):
+        """Takes a benchCfg and wraps any index labels that are too long to be plotted easily
+
+        Args:
+            bench_cfg (BenchCfg):
+
+        Returns:
+            BenchCfg: updated config with wrapped labels
+        """
+        if bench_cfg.over_time:
+            if self.ds.coords["over_time"].dtype == np.datetime64:
+                # plotly catastrophically fails to plot anything with the default long string representation of time, so convert to a shorter time representation
+                self.ds.coords["over_time"] = [
+                    pd.to_datetime(t).strftime("%d-%m-%y %H-%M-%S")
+                    for t in self.ds.coords["over_time"].values
+                ]
+                # wrap very long time event labels because otherwise the graphs are unreadable
+            if bench_cfg.time_event is not None:
+                self.ds.coords["over_time"] = [
+                    "\n".join(wrap(t, 20)) for t in self.ds.coords["over_time"].values
+                ]
+        return bench_cfg
+
+    def post_setup(self):
+        self.plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(self.bench_cfg)
+        self.bench_cfg = self.wrap_long_time_labels(self.bench_cfg)
+        self.ds = convert_dataset_bool_dims_to_str(self.ds)
+
     def result_samples(self) -> int:
         """The number of samples in the results dataframe"""
         return self.ds.count()

@@ -8,6 +8,7 @@ import plotly.graph_objs as go
 from bencher.plotting.plot_filter import VarRange
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultVar
+from bencher.results.optuna_result import OptunaResult
 
 
 class VolumeResult(BenchResultBase):
