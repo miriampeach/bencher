@@ -34,7 +34,7 @@ class OptunaResult(BenchResultBase):
             List[pn.pane.panel]: A list of optuna plot summarising the benchmark process
         """
 
-        return self.collect_optuna_plots()
+        return self.collect_optuna_plots(**kwargs)
 
     def to_optuna_from_sweep(self, bench, n_trials=30):
         optu = self.to_optuna_from_results(
@@ -164,7 +164,9 @@ class OptunaResult(BenchResultBase):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def collect_optuna_plots(self) -> List[pn.pane.panel]:
+    def collect_optuna_plots(
+        self, pareto_width: float = None, pareto_height: float = None
+    ) -> List[pn.pane.panel]:
         """Use optuna to plot various summaries of the optimisation
 
         Args:
@@ -211,8 +213,10 @@ class OptunaResult(BenchResultBase):
                             include_dominated_trials=False,
                         )
                     )
-                    study_pane[-1].height = 1000
-                    study_pane[-1].width = 1000
+                    if pareto_width is not None:
+                        study_pane[-1].width = pareto_width
+                    if pareto_height is not None:
+                        study_pane[-1].height = pareto_height
                 try:
                     study_pane.append(param_importance(self.bench_cfg, study))
                     param_str.append(
