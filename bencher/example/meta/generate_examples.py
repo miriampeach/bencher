@@ -84,7 +84,7 @@ if __name__ == "__main__":
         "/workspaces/bencher/bencher/example/inputs_1_float/example_1_float_3_cat_in_2_out.py",
         "inputs_1_float",
     )
-    
+
     # Example with 2 float inputs plus categorical inputs
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_2_float/example_2_float_3_cat_in_2_out.py",
