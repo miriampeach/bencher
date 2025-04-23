@@ -6,6 +6,8 @@ from param import Parameter
 import holoviews as hv
 from functools import partial
 import panel as pn
+import numpy as np
+from textwrap import wrap
 
 from bencher.utils import int_to_col, color_tuple_to_css, callable_name
 
@@ -314,9 +316,6 @@ class BenchResultBase:
 
     def describe_sweep(self):
         return self.bench_cfg.describe_sweep()
-
-    def get_best_holomap(self, name: str = None):
-        return self.get_hmap(name)[self.get_best_trial_params(True)]
 
     def get_hmap(self, name: str = None):
         try:
@@ -654,3 +653,19 @@ class BenchResultBase:
 
     def to_description(self, width: int = 800) -> pn.pane.Markdown:
         return self.bench_cfg.to_description(width)
+
+    def set_plot_size(self, **kwargs) -> dict:
+        if "width" not in kwargs:
+            if self.bench_cfg.plot_size is not None:
+                kwargs["width"] = self.bench_cfg.plot_size
+            # specific width overrides general size
+            if self.bench_cfg.plot_width is not None:
+                kwargs["width"] = self.bench_cfg.plot_width
+
+        if "height" not in kwargs:
+            if self.bench_cfg.plot_size is not None:
+                kwargs["height"] = self.bench_cfg.plot_size
+            # specific height overrides general size
+            if self.bench_cfg.plot_height is not None:
+                kwargs["height"] = self.bench_cfg.plot_height
+        return kwargs

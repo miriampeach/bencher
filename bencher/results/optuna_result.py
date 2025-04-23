@@ -5,10 +5,6 @@ from copy import deepcopy
 import numpy as np
 import optuna
 import panel as pn
-from textwrap import wrap
-
-import pandas as pd
-import xarray as xr
 
 
 from optuna.visualization import (
@@ -259,18 +255,5 @@ class OptunaResult(BenchResultBase):
         """Return a deep copy of these results"""
         return deepcopy(self)
 
-    def set_plot_size(self, **kwargs) -> dict:
-        if "width" not in kwargs:
-            if self.bench_cfg.plot_size is not None:
-                kwargs["width"] = self.bench_cfg.plot_size
-            # specific width overrides general size
-            if self.bench_cfg.plot_width is not None:
-                kwargs["width"] = self.bench_cfg.plot_width
-
-        if "height" not in kwargs:
-            if self.bench_cfg.plot_size is not None:
-                kwargs["height"] = self.bench_cfg.plot_size
-            # specific height overrides general size
-            if self.bench_cfg.plot_height is not None:
-                kwargs["height"] = self.bench_cfg.plot_height
-        return kwargs
+    def get_best_holomap(self, name: str = None):
+        return self.get_hmap(name)[self.get_best_trial_params(True)]
