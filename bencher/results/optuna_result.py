@@ -222,7 +222,7 @@ class OptunaResult(BenchResultBase):
                     param_str.append(
                         f"    Number of trials on the Pareto front: {len(study.best_trials)}"
                     )
-                except Exception as e:
+                except RuntimeError as e:
                     study_pane.append(f"Error generating parameter importance: {str(e)}")
 
                 for t in study.best_trials:
