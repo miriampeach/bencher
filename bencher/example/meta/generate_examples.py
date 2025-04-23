@@ -121,7 +121,11 @@ if __name__ == "__main__":
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/example_levels.py", "Levels"
+        "/workspaces/bencher/bencher/example/example_levels.py", "levels"
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/example_pareto.py", "pareto"
     )
 
     # todo, enable
