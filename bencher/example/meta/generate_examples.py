@@ -85,6 +85,12 @@ if __name__ == "__main__":
         "inputs_1_float",
     )
 
+    # Example with 2 float inputs plus categorical inputs
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_2_float/example_2_float_3_cat_in_2_out.py",
+        "inputs_2_float",
+    )
+
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D", repeats=100
     )
