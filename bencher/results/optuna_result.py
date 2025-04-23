@@ -86,7 +86,8 @@ class OptunaResult(BenchResultBase):
             optuna.Study: optuna description of the study
         """
         if include_meta:
-            df = self.to_pandas()
+            # df = self.to_pandas()
+            df = self.to_dataset(reduce=ReduceType.NONE).to_dataframe().reset_index()
             all_vars = []
             for v in self.bench_cfg.all_vars:
                 if type(v) is not TimeEvent:
@@ -105,6 +106,7 @@ class OptunaResult(BenchResultBase):
         # df = self.bench_cfg.ds.mean("repeat").to_dataframe.reset_index()
         # self.bench_cfg.all_vars
         # del self.bench_cfg.meta_vars[1]
+        df.dropna(inplace=True)
 
         trials = []
         distributions = {}
@@ -122,6 +124,9 @@ class OptunaResult(BenchResultBase):
                     params[i.name] = row[1][i.name]
 
             for r in self.bench_cfg.optuna_targets():
+                # print(row[1][r])
+                # print(np.isnan(row[1][r]))
+                # if not np.isnan(row[1][r]):
                 values.append(row[1][r])
 
             trials.append(
