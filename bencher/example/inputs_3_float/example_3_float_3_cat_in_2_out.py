@@ -25,8 +25,8 @@ class Pattern3DModel(bch.ParametrizedSweep):
     composition_type = bch.StringSweep(["additive", "multiplicative"], doc="How components combine")
 
     # Output metrics
-    intensity = bch.ResultVar(units="units", doc="Primary response intensity")
     contrast = bch.ResultVar(units="ratio", doc="Secondary contrast measure")
+    intensity = bch.ResultVar(units="units", doc="Primary response intensity")
 
     def __call__(self, **kwargs) -> dict:
         """Generate 3D responses with distinctly different patterns based on categorical inputs."""
@@ -103,7 +103,7 @@ def example_3_float_3_cat_in_2_out(
     """
     if run_cfg is None:
         run_cfg = bch.BenchRunCfg()
-        run_cfg.level = 4
+        run_cfg.level = 5
     run_cfg.repeats = 1  # Fewer repeats for a quicker benchmark
 
     hv.opts.defaults(hv.opts.HeatMap(cmap="plasma", width=300, height=300, colorbar=True))
