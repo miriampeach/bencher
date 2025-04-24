@@ -33,7 +33,7 @@ class Pattern2CatBenchmark(bch.ParametrizedSweep):
         # Normalize inputs to [0,1]
         x = self.x_value / 100
         y = self.y_value / 100
-        
+
         # Set base patterns based on pattern_type
         if self.pattern_type == "linear":
             base_a = 2 * x + 3 * y
@@ -41,19 +41,19 @@ class Pattern2CatBenchmark(bch.ParametrizedSweep):
         else:  # exponential
             base_a = math.exp(2 * x) * math.exp(y) / math.exp(3)
             base_b = math.exp(x) * math.exp(2 * y) / math.exp(3)
-        
+
         # Apply symmetry effect
         if self.symmetry_type == "symmetric":
             sym_a = (x + y) ** 2
             sym_b = (x + y) * abs(x - y)
         else:  # asymmetric
-            sym_a = x ** 2 * y
-            sym_b = x * y ** 2
-        
+            sym_a = x**2 * y
+            sym_b = x * y**2
+
         # Using fixed "smooth" feature type
         feat_a = math.sin(3 * math.pi * x) * math.sin(3 * math.pi * y)
         feat_b = math.cos(3 * math.pi * x) * math.cos(3 * math.pi * y)
-        
+
         # Simplified weights dictionary for 2 categorical variables
         weights = {
             "linear": {
@@ -65,10 +65,10 @@ class Pattern2CatBenchmark(bch.ParametrizedSweep):
                 "asymmetric": ([1, 1.5, 0.4], [1, 1.8, 0.2]),  # Curved gradient
             },
         }
-        
+
         # Get the weights for the current combination
         w_a, w_b = weights[self.pattern_type][self.symmetry_type]
-        
+
         # Calculate final responses with weights
         if self.pattern_type == "linear":
             self.response_a = w_a[0] * base_a + w_a[1] * sym_a + w_a[2] * feat_a
@@ -76,12 +76,12 @@ class Pattern2CatBenchmark(bch.ParametrizedSweep):
         else:  # exponential - multiplicative relationship
             self.response_a = base_a * (1 + w_a[1] * sym_a) * (1 + w_a[2] * feat_a)
             self.response_b = base_b * (1 + w_b[1] * sym_b) * (1 + w_b[2] * feat_b)
-        
+
         # Add minimal randomness (to maintain pattern visibility)
         random_factor = random.uniform(0.98, 1.02)
         self.response_a *= random_factor
         self.response_b *= random_factor
-        
+
         return super().__call__(**kwargs)
 
 
@@ -102,7 +102,7 @@ def example_2_float_2_cat_in_2_out(
     if run_cfg is None:
         run_cfg = bch.BenchRunCfg()
     run_cfg.repeats = 3  # Fewer repeats for a quicker benchmark
-    
+
     bench = Pattern2CatBenchmark().to_bench(run_cfg, report)
     bench.plot_sweep(
         title="Pattern Visualization (2 Float, 2 Categorical Variables)",
