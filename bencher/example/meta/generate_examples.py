@@ -20,7 +20,7 @@ def convert_example_to_jupyter_notebook(
     code += split_code[0]
 
     code += f"""
-bench = {function_name}
+bench={function_name}
 """
 
     code_results = """
@@ -92,6 +92,21 @@ if __name__ == "__main__":
     )
 
     convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_2_float/example_2_float_2_cat_in_2_out.py",
+        "inputs_2_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_2_float/example_2_float_1_cat_in_2_out.py",
+        "inputs_2_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_2_float/example_2_float_0_cat_in_2_out.py",
+        "inputs_2_float",
+    )
+
+    convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D", repeats=100
     )
 
@@ -121,11 +136,7 @@ if __name__ == "__main__":
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/example_levels.py", "levels"
-    )
-
-    convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/example_pareto.py", "pareto"
+        "/workspaces/bencher/bencher/example/example_levels.py", "Levels"
     )
 
     # todo, enable
