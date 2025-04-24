@@ -69,6 +69,10 @@ nbsite_gallery_conf = {
                     "path": "inputs_2_float",
                     "title": "2 Continuous Variables, 0-3 Categorical Variables",
                 },
+                {
+                    "path": "inputs_3_float",
+                    "title": "3 Continuous Variables, 0-3 Categorical Variables",
+                },
                 {"path": "1D", "title": "1D"},
                 {"path": "pareto", "title": "Pareto"},
                 {"path": "2D", "title": "2D"},
