@@ -107,7 +107,7 @@ if __name__ == "__main__":
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_2_float/example_2_float_0_cat_in_2_out.py",
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_2_float_3_cat_in_2_out.py",
         "inputs_3_float",
     )
 
