@@ -20,7 +20,7 @@ def convert_example_to_jupyter_notebook(
     code += split_code[0]
 
     code += f"""
-bench = {function_name}
+bench={function_name}
 """
 
     code_results = """
@@ -106,8 +106,24 @@ if __name__ == "__main__":
         "inputs_2_float",
     )
 
+    # Examples with 3 float inputs plus categorical inputs
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_3_cat_in_2_out.py",
+        "inputs_3_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_2_cat_in_2_out.py",
+        "inputs_3_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_1_cat_in_2_out.py",
+        "inputs_3_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_0_cat_in_2_out.py",
         "inputs_3_float",
     )
 
@@ -141,7 +157,7 @@ if __name__ == "__main__":
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/example_levels.py", "levels"
+        "/workspaces/bencher/bencher/example/example_levels.py", "Levels"
     )
 
     # todo, enable
