@@ -106,6 +106,27 @@ if __name__ == "__main__":
         "inputs_2_float",
     )
 
+    # Examples with 3 float inputs plus categorical inputs
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_3_cat_in_2_out.py",
+        "inputs_3_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_2_cat_in_2_out.py",
+        "inputs_3_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_1_cat_in_2_out.py",
+        "inputs_3_float",
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_3_float/example_3_float_0_cat_in_2_out.py",
+        "inputs_3_float",
+    )
+
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_0D/example_0_in_1_out.py", "0D", repeats=100
     )
